@@ -1,9 +1,12 @@
 const Mock = require('mockjs')
-
+// 流程提取任务列表
 const flowExtractionList = []
-const cleanUpTab2List = []
 const flowExtractionListCount = 15
+// 流程提取解析列表
+const cleanUpTab2List = []
 const cleanUpTab2ListCount = 40
+// 脱敏规则列表
+const desensitizationRuleList = []
 
 // const baseContent = '<p>I am testing data, I am testing data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>'
 // const image_uri = 'https://wpimg.wallstcn.com/e4558086-631c-425c-9430-56ffb46e70b3'
@@ -24,7 +27,15 @@ for (let i = 0; i < cleanUpTab2ListCount; i++) {
     flowTaskName: '@increment'
   }))
 }
-
+for (let i = 0; i < flowExtractionListCount; i++) {
+  desensitizationRuleList.push(Mock.mock({
+    ruleCode: '@increment(100000)',
+    origin: '<msisdn>@id(10000000)</msisdn>',
+    rule: '@integer(1, 3)',
+    ruleType: '@integer(1, 2)',
+    newVal: '<msisdn>@increment(10000000)</msisdn>'
+  }))
+}
 module.exports = [
   {
     url: '/vue-element-admin/drainage-test/flowExtractTaskList',
@@ -98,6 +109,39 @@ module.exports = [
       return {
         code: 20000,
         data: cleanUpTab2List
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/dict',
+    type: 'get',
+    response: _ => {
+      return {
+        code: 20000,
+        data: {
+          // 1-脱敏规则字典
+          1: [
+            { label: '仿真数据', value: 1 },
+            { label: '数据屏蔽', value: 2 },
+            { label: '固定数据', value: 3 },
+            { label: '随机数据', value: 4 }
+          ],
+          // 1-规则类型字典
+          2: [
+            { label: '提交节点', value: 1 },
+            { label: '数据表字段', value: 2 }
+          ]
+        }
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/desensitizationRuleList',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: desensitizationRuleList
       }
     }
   },

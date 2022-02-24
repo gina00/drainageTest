@@ -140,7 +140,7 @@ export default {
       if (val.status == 'success') {
         // 点击确定修改后返回
         this.drawerData.visible = !this.drawerData.visible
-        this.tableData.push(val.row)
+        this.tableData.unshift(val.row)
         // this.clickDataMap.set(this.drawerData.clickCount, val.row)
         // this.query()
       } else {
@@ -186,9 +186,4 @@ export default {
     align-items: center;
     margin-bottom: 20px;
   }
-  .commonHeight{
-    height: calc(100vh - 300px);
-    overflow: auto;
-  }
-
 </style>

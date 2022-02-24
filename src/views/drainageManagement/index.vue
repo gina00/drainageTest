@@ -9,5 +9,7 @@ export default {
 </script>
 
 <style>
-
+.page{
+  padding: 20px;
+}
 </style>

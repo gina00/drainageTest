@@ -21,3 +21,17 @@ export function cleanUpTab2List(query) {
     params: { query }
   })
 }
+export function dict(query) {
+  return request({
+    url: '/vue-element-admin/drainage-test/dict',
+    method: 'get',
+    params: { query }
+  })
+}
+export function desensitizationRuleList(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/desensitizationRuleList',
+    method: 'post',
+    data
+  })
+}

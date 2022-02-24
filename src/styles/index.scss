@@ -189,3 +189,15 @@ aside {
 .multiselect--active {
   z-index: 1000 !important;
 }
+
+.commonHeight{
+  height: calc(100vh - 300px);
+  overflow: auto;
+}
+
+.el-table::before {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+}
