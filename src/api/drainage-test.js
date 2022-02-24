@@ -14,3 +14,10 @@ export function flowExtractLogList(query) {
     params: { query }
   })
 }
+export function cleanUpTab2List(query) {
+  return request({
+    url: '/vue-element-admin/drainage-test/cleanUpTab2List',
+    method: 'get',
+    params: { query }
+  })
+}

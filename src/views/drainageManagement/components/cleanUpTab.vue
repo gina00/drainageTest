@@ -23,6 +23,7 @@
 
     <el-table
       v-loading="loading"
+      class="commonHeight"
       :data="tableData"
       border
       style="width: 100%"
@@ -49,6 +50,16 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      style="float:right;margin-top:20px"
+      :current-page="page.pageNum"
+      :page-sizes="[10, 20, 50, 100]"
+      :page-size="page.pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="page.totals"
+      @size-change="handleSizeChange"
+      @current-change="handleIndexChange"
+    />
     <el-drawer
       ref="drawer"
       :title="drawerData.title"
@@ -85,6 +96,7 @@ export default {
         title: '',
         data: {}
       },
+      page: { pageNum: 1, pageSize: 10, totals: 0 },
       selectDataArr: []
     }
   },
@@ -151,6 +163,17 @@ export default {
     },
     startFlowExtract() {
       this.submitSelect(this.selectDataArr)
+    },
+    /**
+     * 分页
+     */
+    handleIndexChange(val) {
+      this.page.pageNum = val
+      this.getData()
+    },
+    handleSizeChange(val) {
+      this.page.pageSize = val
+      this.getData()
     }
   }
 }
@@ -162,6 +185,10 @@ export default {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+  }
+  .commonHeight{
+    height: calc(100vh - 300px);
+    overflow: auto;
   }
 
 </style>
