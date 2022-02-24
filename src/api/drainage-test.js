@@ -1,17 +1,16 @@
 import request from '@/utils/request'
 
-export function flowExtractTaskList(query) {
+export function flowExtractTaskList() {
   return request({
     url: '/vue-element-admin/drainage-test/flowExtractTaskList',
-    method: 'get',
-    params: query
+    method: 'get'
   })
 }
 
-export function xxxxx(data) {
+export function flowExtractLogList(query) {
   return request({
-    url: '/vue-element-admin/article/update',
-    method: 'post',
-    data
+    url: '/vue-element-admin/drainage-test/flowExtractLogList',
+    method: 'get',
+    params: { query }
   })
 }

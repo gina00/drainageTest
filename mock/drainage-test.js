@@ -35,11 +35,47 @@ module.exports = [
       return {
         code: 20000,
         data: {
-          pvData: [
-            { key: 'PC', pv: 1024 },
-            { key: 'mobile', pv: 1024 },
-            { key: 'ios', pv: 1024 },
-            { key: 'android', pv: 1024 }
+          list: [
+            {
+              flowTaskName: '流量提取任务20220210',
+              taskDesc: '流量提取任务20220210',
+              targetHost: '10.1.1.113',
+              loginUser: 'admin',
+              loginPassWord: '111111',
+              extractPath: '/root',
+              extractRange: '2',
+              fileType: 'root.zip'
+            },
+            {
+              flowTaskName: '流量提取任务20220208',
+              taskDesc: '流量提取任务20220208',
+              targetHost: '10.1.9.191',
+              loginUser: 'admin',
+              loginPassWord: '111111',
+              extractPath: '/root',
+              extractRange: '2',
+              fileType: 'root.zip'
+            },
+            {
+              flowTaskName: '流量提取任务20220215',
+              taskDesc: '流量提取任务20220215',
+              targetHost: '10.1.2.176',
+              loginUser: 'admin',
+              loginPassWord: '111111',
+              extractPath: '/root',
+              extractRange: '2',
+              fileType: 'root.zip'
+            },
+            {
+              flowTaskName: '流量提取任务20220215',
+              taskDesc: '流量提取任务20220215',
+              targetHost: '10.1.2.176',
+              loginUser: 'admin',
+              loginPassWord: '111111',
+              extractPath: '/root',
+              extractRange: '2',
+              fileType: 'root.zip'
+            }
           ]
         }
       }

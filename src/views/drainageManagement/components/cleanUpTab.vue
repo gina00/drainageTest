@@ -26,6 +26,8 @@
       :data="tableData"
       border
       style="width: 100%"
+      @select="selectFun"
+      @select-all="selectAllFun"
     >
       <el-table-column type="selection" width="50" />
       <el-table-column label="序号" type="index" width="50" />
@@ -77,52 +79,25 @@ export default {
     return {
       loading: false,
       componentId: '',
-      tableData: [
-        {
-          flowTaskName: '流量提取任务20220210',
-          taskDesc: '流量提取任务20220210',
-          targetHost: '10.1.1.113',
-          loginUser: 'admin',
-          loginPassWord: '111111',
-          extractPath: '/root',
-          extractRange: '2',
-          fileType: 'root.zip'
-        },
-        {
-          flowTaskName: '流量提取任务20220208',
-          taskDesc: '流量提取任务20220208',
-          targetHost: '10.1.9.191',
-          loginUser: 'admin',
-          loginPassWord: '111111',
-          extractPath: '/root',
-          extractRange: '2',
-          fileType: 'root.zip'
-        },
-        {
-          flowTaskName: '流量提取任务20220215',
-          taskDesc: '流量提取任务20220215',
-          targetHost: '10.1.2.176',
-          loginUser: 'admin',
-          loginPassWord: '111111',
-          extractPath: '/root',
-          extractRange: '2',
-          fileType: 'root.zip'
-        }],
+      tableData: [],
       drawerData: {
         visible: false,
         title: '',
         data: {}
-      }
+      },
+      selectDataArr: []
     }
   },
   mounted() {
-    // this.getData()
+    this.getData()
   },
   methods: {
     getData() {
       this.loading = true
       flowExtractTaskList().then(response => {
-        this.tableData = response.data.items
+        this.tableData = response.data.list
+      }).finally(() => {
+        this.loading = false
       })
     },
     // 根据不同的点击操作显示不同的弹窗
@@ -163,8 +138,20 @@ export default {
         currentDrawer.initForm()
       }
     },
-    startFlowExtract() {}
-
+    // 复选框多选及全选
+    selectFun(row) {
+      this.selectDataArr = row
+    },
+    // 复选框多选及全选
+    selectAllFun(row) {
+      this.selectDataArr = row
+    },
+    submitSelect(selectDataArr) {
+      this.$emit('submitSelect', { status: 'success', rows: selectDataArr })
+    },
+    startFlowExtract() {
+      this.submitSelect(this.selectDataArr)
+    }
   }
 }
 </script>

@@ -2,6 +2,57 @@
 
 const constantRoutes = [
   {
+    path: '/drainageManagement',
+    component: 'layout/Layout',
+    redirect: '/drainageManagement',
+    alwaysShow: true, // will always show the root menu
+    name: 'drainageManagement',
+    meta: {
+      title: '引流管理',
+      icon: 'lock',
+      roles: ['admin', 'editor'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'flowExtractionCleanUp',
+        component: 'views/drainageManagement/flowExtractionCleanUp',
+        name: 'flowExtractionCleanUp',
+        meta: {
+          title: '流量提取与清理',
+          roles: ['admin', 'editor'],
+          affix: true
+        }
+      },
+      {
+        path: 'desensitizationRules',
+        component: 'views/drainageManagement/desensitizationRules',
+        name: 'desensitizationRules',
+        meta: {
+          title: '脱敏规则配置',
+          roles: ['admin', 'editor']
+        }
+      },
+      {
+        path: 'desensitizationTreatment',
+        component: 'views/drainageManagement/desensitizationTreatment',
+        name: 'desensitizationTreatment',
+        meta: {
+          title: '脱敏处理',
+          roles: ['admin', 'editor']
+        }
+      },
+      {
+        path: 'trafficFilter',
+        component: 'views/drainageManagement/trafficFilter',
+        name: 'trafficFilter',
+        meta: {
+          title: '流量筛选',
+          roles: ['admin', 'editor']
+        }
+      }
+    ]
+  },
+  {
     path: '/redirect',
     component: 'layout/Layout',
     hidden: true,
@@ -73,57 +124,7 @@ const constantRoutes = [
 ]
 
 const asyncRoutes = [
-  // {
-  //   path: '/drainageManagement',
-  //   component: 'layout/Layout',
-  //   redirect: '/drainageManagement',
-  //   alwaysShow: true, // will always show the root menu
-  //   name: 'drainageManagement',
-  //   meta: {
-  //     title: '引流管理',
-  //     icon: 'lock',
-  //     roles: ['admin', 'editor'] // you can set roles in root nav
-  //   },
-  //   children: [
-  //     {
-  //       path: 'flowExtractionCleanUp',
-  //       component: () => import('@/views/drainageManagement/flowExtractionCleanUp'),
-  //       name: 'flowExtractionCleanUp',
-  //       meta: {
-  //         title: '流量提取与清理',
-  //         roles: ['admin', 'editor'],
-  //         affix: true
-  //       }
-  //     },
-  //     {
-  //       path: 'desensitizationRules',
-  //       component: () => import('@/views/drainageManagement/desensitizationRules'),
-  //       name: 'desensitizationRules',
-  //       meta: {
-  //         title: '脱敏规则配置',
-  //         roles: ['admin', 'editor']
-  //       }
-  //     },
-  //     {
-  //       path: 'desensitizationTreatment',
-  //       component: () => import('@/views/drainageManagement/desensitizationTreatment'),
-  //       name: 'desensitizationTreatment',
-  //       meta: {
-  //         title: '脱敏处理',
-  //         roles: ['admin', 'editor']
-  //       }
-  //     },
-  //     {
-  //       path: 'trafficFilter',
-  //       component: () => import('@/views/drainageManagement/trafficFilter'),
-  //       name: 'trafficFilter',
-  //       meta: {
-  //         title: '流量筛选',
-  //         roles: ['admin', 'editor']
-  //       }
-  //     }
-  //   ]
-  // },
+
   {
     path: '/permission',
     component: 'layout/Layout',
