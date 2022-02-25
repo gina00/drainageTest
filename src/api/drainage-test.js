@@ -49,3 +49,10 @@ export function trafficFilterList(data) {
     data
   })
 }
+export function pageQueryTree(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/pageQueryTree',
+    method: 'post',
+    data
+  })
+}

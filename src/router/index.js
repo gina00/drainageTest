@@ -47,8 +47,7 @@ export const constantRoutes = [
     name: 'drainageManagement',
     meta: {
       title: '引流管理',
-      icon: 'lock',
-      roles: ['admin', 'editor'] // you can set roles in root nav
+      icon: 'el-icon-s-help'
     },
     children: [
       {
@@ -57,7 +56,6 @@ export const constantRoutes = [
         name: 'flowExtractionCleanUp',
         meta: {
           title: '流量提取与清理',
-          roles: ['admin', 'editor'],
           affix: true
         }
       },
@@ -66,8 +64,7 @@ export const constantRoutes = [
         component: () => import('@/views/drainageManagement/desensitizationRules'),
         name: 'desensitizationRules',
         meta: {
-          title: '脱敏规则配置',
-          roles: ['admin', 'editor']
+          title: '脱敏规则配置'
         }
       },
       {
@@ -75,8 +72,7 @@ export const constantRoutes = [
         component: () => import('@/views/drainageManagement/desensitizationTreatment'),
         name: 'desensitizationTreatment',
         meta: {
-          title: '脱敏处理',
-          roles: ['admin', 'editor']
+          title: '脱敏处理'
         }
       },
       {
@@ -84,8 +80,68 @@ export const constantRoutes = [
         component: () => import('@/views/drainageManagement/trafficFilter'),
         name: 'trafficFilter',
         meta: {
-          title: '流量筛选',
-          roles: ['admin', 'editor']
+          title: '流量筛选'
+        }
+      }
+    ]
+  },
+  {
+    path: '/drainageTest',
+    component: Layout,
+    redirect: '/drainageTest',
+    alwaysShow: false, // will always show the root menu
+    name: 'drainageTest',
+    meta: {
+      title: '引流测试',
+      icon: 'excel'
+    },
+    children: [
+      {
+        path: 'baseData',
+        component: () => import('@/views/drainageTest/baseData'),
+        name: 'baseData',
+        meta: {
+          title: '基准数据同步'
+        }
+      },
+      {
+        path: 'monitorManage',
+        component: () => import('@/views/drainageTest/monitorManage'),
+        name: 'monitorManage',
+        meta: {
+          title: '监控配置'
+        }
+      },
+      {
+        path: 'compareRules',
+        component: () => import('@/views/drainageTest/compareRules'),
+        name: 'compareRules',
+        meta: {
+          title: '结果比对规则配置'
+        }
+      },
+      {
+        path: 'drainageScene',
+        component: () => import('@/views/drainageTest/drainageScene'),
+        name: 'drainageScene',
+        meta: {
+          title: '引流场景列表'
+        }
+      },
+      {
+        path: 'taskManage',
+        component: () => import('@/views/drainageTest/taskManage'),
+        name: 'taskManage',
+        meta: {
+          title: '任务配置'
+        }
+      },
+      {
+        path: 'drainageTestResult',
+        component: () => import('@/views/drainageTest/drainageTestResult'),
+        name: 'drainageTestResult',
+        meta: {
+          title: '引流测试结果展示'
         }
       }
     ]

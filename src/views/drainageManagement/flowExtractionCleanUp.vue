@@ -40,7 +40,7 @@
 <script>
 import cleanUpTab from '@/views/drainageManagement/components/cleanUpTab.vue'
 import cleanUpTab2 from '@/views/drainageManagement/components/cleanUpTab2.vue'
-import cleanUpTab3 from '@/views/drainageManagement/components/cleanUpTab2.vue'
+import cleanUpTab3 from '@/views/drainageManagement/components/cleanUpTab3.vue'
 export default {
   components: {
     cleanUpTab,
@@ -100,9 +100,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.page{
-  padding: 20px;
-}
+
 .logPanel{
 
   line-height: 23px;

@@ -11,6 +11,8 @@ const desensitizationRuleList = []
 const dbRuleList = []
 // 流量筛选列表
 const trafficFilterList = []
+const treeList = []
+const treeChildrenList = []
 
 // const baseContent = '<p>I am testing data, I am testing data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>'
 // const image_uri = 'https://wpimg.wallstcn.com/e4558086-631c-425c-9430-56ffb46e70b3'
@@ -67,6 +69,36 @@ for (let i = 0; i < flowExtractionListCount; i++) {
     respMessage: '<?xml version="1.0" encoding="GBK" ?><operation_out><service_name>BM_QueryUserStatus</service_name><request_type>1002</request_type><sysfunc_id>92004401</sysfunc_id><request_seq>1335941279540</request_seq><response_time>20211030144817</response_time><response_seq>200547644929</response_seq><request_source>101219</request_source><response><resp_type>0</resp_type><resp_code>0000</resp_code><resp_desc></resp_desc></response><content><response><service_status>44</service_status></response></content></operation_out>'
   }))
 }
+for (let i = 0; i < 6; i++) {
+  treeChildrenList.push(Mock.mock({
+    id: '@increment(10)',
+    'label|1': [
+      'product_area_def',
+      'ng_product_channel_cfg',
+      'ini_config',
+      'connection_source_def',
+      'dtl_schema_def',
+      'base_query_route_rule',
+      'user_product',
+      'user_product_deatil',
+      'user_product_common_para',
+      'crm_bill_operation',
+      'user_product_para',
+      'user_services',
+      'user_service_para',
+      'user_bons_deal',
+      'boss_sms_send_operation'
+    ]
+  }))
+}
+for (let i = 0; i < 3; i++) {
+  treeList.push(Mock.mock({
+    id: '@increment(1)',
+    'label|1': ['CCS', 'PMS', 'NOTIFY', 'ORD', 'MANAFE'],
+    children: treeChildrenList
+  }))
+}
+
 module.exports = [
   {
     url: '/vue-element-admin/drainage-test/flowExtractTaskList',
@@ -198,6 +230,16 @@ module.exports = [
       return {
         code: 20000,
         data: trafficFilterList
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/pageQueryTree',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: treeList
       }
     }
   },
