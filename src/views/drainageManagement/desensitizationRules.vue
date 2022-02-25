@@ -80,15 +80,13 @@
       :data="tableData"
       border
       style="width: 100%"
-      @select="selectFun"
-      @select-all="selectAllFun"
     >
       <!-- <el-table-column type="selection" width="50" /> -->
       <el-table-column label="序号" type="index" width="50" />
       <el-table-column prop="ruleCode" label="规则编号" min-width="180" align="center" />
       <el-table-column prop="ruleType" label="规则类型" min-width="180" align="center">
         <template slot-scope="scope">
-          {{ ruleTypeOptionsMap.get(scope.row.ruleType).label }}
+          {{ ruleTypeOptionsMap.get(scope.row.ruleType)?ruleTypeOptionsMap.get(scope.row.ruleType).label:'' }}
         </template>
       </el-table-column>
       <el-table-column prop="origin" label="原始值" min-width="180" align="center" />
@@ -162,6 +160,7 @@ export default {
         newVal: null
       },
       ruleOptions: [],
+      ruleTypeOptions: [],
       tableData: [],
       drawerData: {
         visible: false,
@@ -207,6 +206,7 @@ export default {
         this.loading = false
       })
     },
+    resetQuery() {},
     // 根据不同的点击操作显示不同的弹窗
     clickShowDrawer(clickType, data) {
       this.drawerData.visible = !this.drawerData.visible

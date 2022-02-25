@@ -35,3 +35,17 @@ export function desensitizationRuleList(data) {
     data
   })
 }
+export function dbRuleList(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/dbRuleList',
+    method: 'post',
+    data
+  })
+}
+export function trafficFilterList(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/trafficFilterList',
+    method: 'post',
+    data
+  })
+}

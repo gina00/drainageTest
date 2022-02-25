@@ -1,23 +1,32 @@
 <template>
   <div>
     <div class="titleAndOperation">
-      <span>已解析入库功能号列表</span>
+      <span>数据表规则列表</span>
       <div>
         <el-button
           type="primary"
           size="small"
           @click="startFlowExtract()"
         >
-          开始解析
+          数据表脱敏
         </el-button>
       </div>
 
     </div>
-    <el-row :gutter="20" class="tab2ElRowClass">
-      <el-col v-for="(item,index) in tableData" :key="index" :span="3">
-        <span>{{ '10045' + item.flowTaskName }}</span>
-      </el-col>
-    </el-row>
+    <el-table
+      v-loading="loading"
+      class="commonHeight"
+      :data="tableData"
+      border
+      style="width: 100%"
+      @select="selectFun"
+      @select-all="selectAllFun"
+    >
+      <el-table-column type="selection" width="50" />
+      <el-table-column label="序号" type="index" width="50" />
+      <el-table-column prop="ruleCode" label="规则编号" min-width="120" align="left" />
+      <el-table-column prop="ruleName" label="规则名称" min-width="280" align="left" />
+    </el-table>
     <el-pagination
       style="float:right;margin-top:20px"
       :current-page="page.pageNum"
@@ -32,10 +41,17 @@
 </template>
 
 <script>
-import { cleanUpTab2List } from '@/api/drainage-test'
+import { dbRuleList } from '@/api/drainage-test'
 
 export default {
   components: {
+  },
+  props: {
+    // eslint-disable-next-line vue/require-default-prop
+    activeName: {
+      type: String,
+      required: false
+    }
   },
   data() {
     return {
@@ -47,7 +63,15 @@ export default {
         title: '',
         data: {}
       },
-      page: { pageNum: 1, pageSize: 10, totals: 0 }
+      page: { pageNum: 1, pageSize: 10, totals: 0 },
+      selectDataArr: []
+    }
+  },
+  watch: {
+    activeName() {
+      if (this.activeName == 'tab2') {
+        this.getData()
+      }
     }
   },
   mounted() {
@@ -56,7 +80,7 @@ export default {
   methods: {
     getData() {
       this.loading = true
-      cleanUpTab2List().then(response => {
+      dbRuleList().then(response => {
         this.tableData = response.data
       }).finally(() => {
         this.loading = false
@@ -76,17 +100,19 @@ export default {
         currentDrawer.initForm()
       }
     },
+    // 复选框多选及全选
+    selectFun(row) {
+      this.selectDataArr = row
+    },
+    // 复选框多选及全选
+    selectAllFun(row) {
+      this.selectDataArr = row
+    },
     submitSelect(selectDataArr) {
       this.$emit('submitSelect', { status: 'success', rows: selectDataArr })
     },
     startFlowExtract() {
-      this.submitSelect(this.tableData)
-      this.loading = true
-      cleanUpTab2List().then(response => {
-        this.tableData.push(...response.data)
-      }).finally(() => {
-        this.loading = false
-      })
+      this.submitSelect(this.selectDataArr)
     },
     /**
      * 分页

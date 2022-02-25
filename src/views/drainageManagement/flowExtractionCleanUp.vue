@@ -11,7 +11,7 @@
             <cleanUpTab2 @submitSelect="submitSelect" />
           </el-tab-pane>
           <el-tab-pane label="流量清理" name="tab3">
-            <cleanUpTab2 @submitSelect="submitSelect" />
+            <cleanUpTab3 @submitSelect="submitSelect" />
           </el-tab-pane>
         </el-tabs>
       </el-col>
@@ -40,10 +40,12 @@
 <script>
 import cleanUpTab from '@/views/drainageManagement/components/cleanUpTab.vue'
 import cleanUpTab2 from '@/views/drainageManagement/components/cleanUpTab2.vue'
+import cleanUpTab3 from '@/views/drainageManagement/components/cleanUpTab2.vue'
 export default {
   components: {
     cleanUpTab,
-    cleanUpTab2
+    cleanUpTab2,
+    cleanUpTab3
   },
   data() {
     return {
