@@ -34,8 +34,8 @@
                 :data="data"
                 show-checkbox
                 node-key="id"
-                default-expand-all
                 :expand-on-click-node="false"
+                :default-expanded-keys="[...defaultExpandedKey]"
                 :render-content="renderContent"
               />
             </el-col>
@@ -45,8 +45,8 @@
                 :data="data2"
                 show-checkbox
                 node-key="id"
-                default-expand-all
                 :expand-on-click-node="false"
+                :default-expanded-keys="[...defaultExpandedKey2]"
                 :render-content="renderContent"
               />
             </el-col>
@@ -154,6 +154,9 @@ export default {
     closeLogPanel() {
       this.isShowlogPanel = false
       this.span = 24
+    },
+    setCheckedKey() {
+
     }
   }
 }

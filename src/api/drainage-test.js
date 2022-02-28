@@ -21,6 +21,13 @@ export function cleanUpTab2List(query) {
     params: { query }
   })
 }
+export function cleanUpTab3List(query) {
+  return request({
+    url: '/vue-element-admin/drainage-test/cleanUpTab3List',
+    method: 'get',
+    params: { query }
+  })
+}
 export function dict(query) {
   return request({
     url: '/vue-element-admin/drainage-test/dict',
@@ -52,6 +59,13 @@ export function trafficFilterList(data) {
 export function pageQueryTree(data) {
   return request({
     url: '/vue-element-admin/drainage-test/pageQueryTree',
+    method: 'post',
+    data
+  })
+}
+export function getMonitorData(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/getMonitorData',
     method: 'post',
     data
   })

@@ -15,7 +15,7 @@
     </div>
     <el-row :gutter="20" class="tab2ElRowClass">
       <el-col v-for="item in tableData" :key="item" :span="3">
-        <span>{{ '10045' + item.flowTaskName }}</span>
+        <span>{{ item.flowTaskName }}</span>
       </el-col>
     </el-row>
     <el-pagination
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { cleanUpTab2List } from '@/api/drainage-test'
+import { cleanUpTab3List } from '@/api/drainage-test'
 
 export default {
   components: {
@@ -56,7 +56,7 @@ export default {
   methods: {
     getData() {
       this.loading = true
-      cleanUpTab2List().then(response => {
+      cleanUpTab3List().then(response => {
         this.tableData = response.data
       }).finally(() => {
         this.loading = false

@@ -4,6 +4,7 @@ const flowExtractionList = []
 const flowExtractionListCount = 15
 // 流程提取解析列表
 const cleanUpTab2List = []
+const cleanUpTab3List = []
 const cleanUpTab2ListCount = 40
 // 脱敏规则列表/报文规则列表
 const desensitizationRuleList = []
@@ -13,6 +14,7 @@ const dbRuleList = []
 const trafficFilterList = []
 const treeList = []
 const treeChildrenList = []
+const monitorList = []
 
 // const baseContent = '<p>I am testing data, I am testing data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>'
 // const image_uri = 'https://wpimg.wallstcn.com/e4558086-631c-425c-9430-56ffb46e70b3'
@@ -30,7 +32,12 @@ for (let i = 0; i < flowExtractionListCount; i++) {
 }
 for (let i = 0; i < cleanUpTab2ListCount; i++) {
   cleanUpTab2List.push(Mock.mock({
-    flowTaskName: '@increment(1000)'
+    flowTaskName: '@increment'
+  }))
+}
+for (let i = 0; i < cleanUpTab2ListCount; i++) {
+  cleanUpTab3List.push(Mock.mock({
+    flowTaskName: '@increment'
   }))
 }
 for (let i = 0; i < flowExtractionListCount; i++) {
@@ -69,6 +76,12 @@ for (let i = 0; i < flowExtractionListCount; i++) {
     respMessage: '<?xml version="1.0" encoding="GBK" ?><operation_out><service_name>BM_QueryUserStatus</service_name><request_type>1002</request_type><sysfunc_id>92004401</sysfunc_id><request_seq>1335941279540</request_seq><response_time>20211030144817</response_time><response_seq>200547644929</response_seq><request_source>101219</request_source><response><resp_type>0</resp_type><resp_code>0000</resp_code><resp_desc></resp_desc></response><content><response><service_status>44</service_status></response></content></operation_out>'
   }))
 }
+for (let i = 0; i < flowExtractionListCount; i++) {
+  monitorList.push(Mock.mock({
+    functionCode: '@id(100000000)',
+    reqType: '@integer(1, 2)'
+  }))
+}
 for (let i = 0; i < 6; i++) {
   treeChildrenList.push(Mock.mock({
     id: '@increment(10)',
@@ -91,10 +104,10 @@ for (let i = 0; i < 6; i++) {
     ]
   }))
 }
-for (let i = 0; i < 3; i++) {
+for (let i = 0; i < 10; i++) {
   treeList.push(Mock.mock({
     id: '@increment(1)',
-    'label|1': ['CCS', 'PMS', 'NOTIFY', 'ORD', 'MANAFE'],
+    'label|1': ['CCS', 'PMS', 'NOTIFY', 'ORD', 'MANAFE', 'CCS1', 'PMS1', 'NOTIFY1', 'ORD1', 'MANAFE1'],
     children: treeChildrenList
   }))
 }
@@ -176,6 +189,16 @@ module.exports = [
     }
   },
   {
+    url: '/vue-element-admin/drainage-test/cleanUpTab3List',
+    type: 'get',
+    response: _ => {
+      return {
+        code: 20000,
+        data: cleanUpTab3List
+      }
+    }
+  },
+  {
     url: '/vue-element-admin/drainage-test/dict',
     type: 'get',
     response: _ => {
@@ -240,6 +263,16 @@ module.exports = [
       return {
         code: 20000,
         data: treeList
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/getMonitorData',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: monitorList
       }
     }
   },

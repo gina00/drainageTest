@@ -15,7 +15,7 @@
     </div>
     <el-row :gutter="20" class="tab2ElRowClass">
       <el-col v-for="(item,index) in tableData" :key="index" :span="3">
-        <span>{{ '10045' + item.flowTaskName }}</span>
+        <span>{{ item.flowTaskName }}</span>
       </el-col>
     </el-row>
     <el-pagination
