@@ -83,7 +83,7 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="提取范围">
-            <el-radio-group v-model="formData.extractRange" class="radioPanel">
+            <el-radio-group v-model="formData.extractRange" class="radioPanel" @change="changeRadio">
               <el-radio label="1">全部提取</el-radio>
               <el-radio label="2">指定文件类型</el-radio>
             </el-radio-group>
@@ -145,7 +145,7 @@ export default {
     initForm() {
       if (this.paramData.clickType == 'add') {
         this.formData = JSON.parse(JSON.stringify(this.paramData))
-        this.formData.extractRange = '2'
+        this.$set(this.formData, 'extractRange', '2')
       } else {
         this.$refs['form'].resetFields()
         this.formData = Object.assign({}, this.formData, this.paramData)
@@ -180,6 +180,9 @@ export default {
           return false
         }
       })
+    },
+    changeRadio(val) {
+      this.formData.extractRange = val
     }
   }
 }

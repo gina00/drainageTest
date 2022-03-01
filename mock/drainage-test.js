@@ -1,82 +1,20 @@
 const Mock = require('mockjs')
-// 流程提取任务列表
-const flowExtractionList = []
-const flowExtractionListCount = 15
-// 流程提取解析列表
-const cleanUpTab2List = []
-const cleanUpTab3List = []
-const cleanUpTab2ListCount = 40
-// 脱敏规则列表/报文规则列表
-const desensitizationRuleList = []
-// 数据表规则列表
-const dbRuleList = []
-// 流量筛选列表
-const trafficFilterList = []
+
 const treeList = []
 const treeChildrenList = []
 const monitorList = []
+const bussinessTableData = []
+const severTableData = []
+const nodeList = []
+const compareAndFunctionCodeList = []
+const childNodeList = []
+const analysisParmsOutList = []
+const drainageSceneList = []
 
 // const baseContent = '<p>I am testing data, I am testing data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>'
 // const image_uri = 'https://wpimg.wallstcn.com/e4558086-631c-425c-9430-56ffb46e70b3'
-for (let i = 0; i < flowExtractionListCount; i++) {
-  flowExtractionList.push(Mock.mock({
-    flowTaskName: '流量提取任务@increment',
-    taskDesc: '流量提取任务20220210',
-    targetHost: '10.1.1.113',
-    loginUser: 'admin',
-    loginPassWord: '111111',
-    extractPath: '/root',
-    extractRange: '2',
-    fileType: 'root.zip'
-  }))
-}
-for (let i = 0; i < cleanUpTab2ListCount; i++) {
-  cleanUpTab2List.push(Mock.mock({
-    flowTaskName: '@increment'
-  }))
-}
-for (let i = 0; i < cleanUpTab2ListCount; i++) {
-  cleanUpTab3List.push(Mock.mock({
-    flowTaskName: '@increment'
-  }))
-}
-for (let i = 0; i < flowExtractionListCount; i++) {
-  desensitizationRuleList.push(Mock.mock({
-    ruleCode: '@increment(100000)',
-    origin: '<msisdn>@id(10000000)</msisdn>',
-    rule: '@integer(1, 3)',
-    ruleName: '@ctitle()',
-    ruleType: '@integer(1, 2)',
-    newVal: '<msisdn>@increment(10000000)</msisdn>'
-  }))
-}
-for (let i = 0; i < flowExtractionListCount; i++) {
-  dbRuleList.push(Mock.mock({
-    ruleCode: '@increment(200000)',
-    origin: '<msisdn>@id(20000000)</msisdn>',
-    rule: '@integer(1, 3)',
-    ruleName: '@ctitle()',
-    ruleType: '@integer(1, 2)',
-    newVal: '<msisdn>@increment(20000000)</msisdn>'
-  }))
-}
-for (let i = 0; i < flowExtractionListCount; i++) {
-  trafficFilterList.push(Mock.mock({
-    'city|591-600': 1,
-    functionCode: '@id(100000000)',
-    serverType: '@integer(1, 2)',
-    reqTime: '@datetime()',
-    respTime: '@datetime()',
-    // times: '@time()',
-    'times|500-6000': 1,
-    downloadDate: '@date()',
-    prodUrl: 'http://10.46.238.142:8089/fcgi-bin/BSSP_SFC',
-    realUrl: 'http://10.46.238.142:8089/fcgi-bin/BSSP_SFC',
-    reqMessage: '<?xml version=\"1.0\" encoding=\"GBK\"?><operation_in type=\"struct\"><organ_id type=\"int\"/><sysfunc_id type=\"int\">92002040</sysfunc_id><request_source type=\"int\">101219</request_source><operator_id type=\"string\">9998901</operator_id><request_target type=\"int\">101101</request_target><request_time type=\"datetime\">20211030144759</request_time><verify_code type=\"string\">101219200608310000000001</verify_code><service_name type=\"string\">BM_QueryUserStatus</service_name><content type=\"string\"><request type=\"struct\"><home_city type=\"int\">591</home_city><msisdn type=\"int\"></msisdn><user_id type=\"string\">591500028609324</user_id><obj_type type=\"int\">1</obj_type></request></content><cont_version type=\"string\">0100</cont_version><msg_version type=\"string\">0100</msg_version><request_type type=\"int\">1002</request_type><request_seq type=\"long\">1335941279540</request_seq></operation_in>',
-    respMessage: '<?xml version="1.0" encoding="GBK" ?><operation_out><service_name>BM_QueryUserStatus</service_name><request_type>1002</request_type><sysfunc_id>92004401</sysfunc_id><request_seq>1335941279540</request_seq><response_time>20211030144817</response_time><response_seq>200547644929</response_seq><request_source>101219</request_source><response><resp_type>0</resp_type><resp_code>0000</resp_code><resp_desc></resp_desc></response><content><response><service_status>44</service_status></response></content></operation_out>'
-  }))
-}
-for (let i = 0; i < flowExtractionListCount; i++) {
+
+for (let i = 0; i < 15; i++) {
   monitorList.push(Mock.mock({
     functionCode: '@id(100000000)',
     reqType: '@integer(1, 2)'
@@ -104,6 +42,7 @@ for (let i = 0; i < 6; i++) {
     ]
   }))
 }
+
 for (let i = 0; i < 10; i++) {
   treeList.push(Mock.mock({
     id: '@increment(1)',
@@ -112,150 +51,73 @@ for (let i = 0; i < 10; i++) {
   }))
 }
 
+for (let i = 0; i < 4; i++) {
+  compareAndFunctionCodeList.push(Mock.mock({
+    id: '@increment(10)',
+    compareRuleCode: '@increment(10)',
+    // 'city|591-600': 1,
+    'functionCode|902055220-902055240': 1,
+    // functionCode: 902055220 + i,
+    // functionCode: '@increment(10)',
+    rulesSpecVal: null
+  }))
+}
+for (let i = 0; i < 4; i++) {
+  childNodeList.push(Mock.mock({
+    id: '@increment(10)',
+    'paramName|1': ['request_seq', 'request_seq2', 'request_seq3', 'request_seq4'],
+    'paramDesc|1': ['request_seq', 'request_seq2', 'request_seq3', 'request_seq4'],
+    occurrenceSort: 1,
+    paramPath: null,
+    'disorder|1': '@boolean',
+    'needChecked|1': '@boolean',
+    'existed|1': '@boolean',
+    messageType: '@integer(1, 2)',
+    responseMessage: '<?xml version=\"1.0\" encoding=\"GBK\"?> \r\n<operation_in type=\"struct\">\r\n  <service_name type=\"string\">ac_query_invoice</service_name>\r\n  <sysfunc_id type=\"int\">91001001</sysfunc_id>\r\n  <request_type type=\"int\">2001</request_type>\r\n  <verify_code type=\"string\">789730661774598915448481</verify_code>\r\n  <operator_id type=\"string\">9999999</operator_id>\r\n  <request_time type=\"datetime\">20050101223344</request_time>\r\n  <request_seq type=\"long\">100000000000</request_seq>\r\n  <request_source type=\"int\">101213</request_source>\r\n  <request_target type=\"int\">101101</request_target>\r\n  <msg_version type=\"string\">0100</msg_version>\r\n  <cont_version type=\"string\">0100</cont_version>\r\n  <content type=\"string\"><![CDATA[<?xml version=\"1.0\" encoding=\"GBK\"?>\r\n        <request type=\"struct\">\r\n <home_city type=\"int\">$:1</home_city>\r\n    <start_month type=\"int\">$:2</start_month>\r\n            <end_month type=\"int\">$:3</end_month>\r\n            <msisdn type=\"string\">$:4</msisdn>\r\n        </request>]]></content>\r\n</operation_in>'
+  }))
+}
+for (let i = 0; i < 50; i++) {
+  nodeList.push(Mock.mock({
+    id: '@increment',
+    functionCode: 902055220 + i,
+    compareAndFunctionCodeList: compareAndFunctionCodeList,
+    updateTime: '@date()',
+    children: childNodeList
+  }))
+}
+// 引流测试比对规则列表
+for (let i = 0; i < 50; i++) {
+  bussinessTableData.push(Mock.mock({
+    functionCode: 902055220 + i
+  }))
+}
+for (let i = 0; i < 50; i++) {
+  severTableData.push(Mock.mock({
+    functionCode: 902055220 + i
+  }))
+}
+for (let i = 0; i < 15; i++) {
+  analysisParmsOutList.push(Mock.mock({
+    id: '@increment(10)',
+    'paramName|1': ['PubInfo', 'RegionCode', 'ClientIP', 'InterfaceType', 'InterfaceId', 'CountyCode', 'TransactionId', 'TransactionTime', 'OpId', 'OrgId', 'Request', 'BusiCode', 'BusiParams', 'phone_id'],
+    'paramDesc|1': ['PubInfo', 'RegionCode', 'ClientIP', 'InterfaceType', 'InterfaceId', 'CountyCode', 'TransactionId', 'TransactionTime', 'OpId', 'OrgId', 'Request', 'BusiCode', 'BusiParams', 'phone_id'],
+    occurrenceSort: 1,
+    paramValue: 1,
+    'disorder|1': '@boolean',
+    'needChecked|1': '@boolean',
+    'existed|1': '@boolean',
+    'paramPath|1': ['/PubInfo', '/PubInfo/RegionCode', '/ClientIP', '/InterfaceType', '/InterfaceId', '/CountyCode', '/TransactionId', '/TransactionTime', '/OpId', '/OrgId', '/Request', '/BusiCode', '/BusiParams', '/phone_id'],
+    responseMessage: '<?xml version=\"1.0\" encoding=\"GBK\"?> \r\n<operation_in type=\"struct\">\r\n  <service_name type=\"string\">ac_query_invoice</service_name>\r\n  <sysfunc_id type=\"int\">91001001</sysfunc_id>\r\n  <request_type type=\"int\">2001</request_type>\r\n  <verify_code type=\"string\">789730661774598915448481</verify_code>\r\n  <operator_id type=\"string\">9999999</operator_id>\r\n  <request_time type=\"datetime\">20050101223344</request_time>\r\n  <request_seq type=\"long\">100000000000</request_seq>\r\n  <request_source type=\"int\">101213</request_source>\r\n  <request_target type=\"int\">101101</request_target>\r\n  <msg_version type=\"string\">0100</msg_version>\r\n  <cont_version type=\"string\">0100</cont_version>\r\n  <content type=\"string\"><![CDATA[<?xml version=\"1.0\" encoding=\"GBK\"?>\r\n        <request type=\"struct\">\r\n <home_city type=\"int\">$:1</home_city>\r\n    <start_month type=\"int\">$:2</start_month>\r\n            <end_month type=\"int\">$:3</end_month>\r\n            <msisdn type=\"string\">$:4</msisdn>\r\n        </request>]]></content>\r\n</operation_in>'
+  }))
+}
+for (let i = 0; i < 50; i++) {
+  drainageSceneList.push(Mock.mock({
+    sceneCode: 1000000 + i,
+    sceneName: '测试场景' + i,
+    updateTime: '@date()'
+  }))
+}
 module.exports = [
-  {
-    url: '/vue-element-admin/drainage-test/flowExtractTaskList',
-    type: 'get',
-    response: _ => {
-      return {
-        code: 20000,
-        data: {
-          list: flowExtractionList
-          // list: [
-          //   {
-          //     flowTaskName: '流量提取任务20220210',
-          //     taskDesc: '流量提取任务20220210',
-          //     targetHost: '10.1.1.113',
-          //     loginUser: 'admin',
-          //     loginPassWord: '111111',
-          //     extractPath: '/root',
-          //     extractRange: '2',
-          //     fileType: 'root.zip'
-          //   },
-          //   {
-          //     flowTaskName: '流量提取任务20220208',
-          //     taskDesc: '流量提取任务20220208',
-          //     targetHost: '10.1.9.191',
-          //     loginUser: 'admin',
-          //     loginPassWord: '111111',
-          //     extractPath: '/root',
-          //     extractRange: '2',
-          //     fileType: 'root.zip'
-          //   },
-          //   {
-          //     flowTaskName: '流量提取任务20220215',
-          //     taskDesc: '流量提取任务20220215',
-          //     targetHost: '10.1.2.176',
-          //     loginUser: 'admin',
-          //     loginPassWord: '111111',
-          //     extractPath: '/root',
-          //     extractRange: '2',
-          //     fileType: 'root.zip'
-          //   },
-          //   {
-          //     flowTaskName: '流量提取任务20220215',
-          //     taskDesc: '流量提取任务20220215',
-          //     targetHost: '10.1.2.176',
-          //     loginUser: 'admin',
-          //     loginPassWord: '111111',
-          //     extractPath: '/root',
-          //     extractRange: '2',
-          //     fileType: 'root.zip'
-          //   },
-          //   {
-          //     flowTaskName: '流量提取任务20220215',
-          //     taskDesc: '流量提取任务20220215',
-          //     targetHost: '10.1.2.176',
-          //     loginUser: 'admin',
-          //     loginPassWord: '111111',
-          //     extractPath: '/root',
-          //     extractRange: '2',
-          //     fileType: 'root.zip'
-          //   }
-          // ]
-        }
-      }
-    }
-  },
-
-  {
-    url: '/vue-element-admin/drainage-test/cleanUpTab2List',
-    type: 'get',
-    response: _ => {
-      return {
-        code: 20000,
-        data: cleanUpTab2List
-      }
-    }
-  },
-  {
-    url: '/vue-element-admin/drainage-test/cleanUpTab3List',
-    type: 'get',
-    response: _ => {
-      return {
-        code: 20000,
-        data: cleanUpTab3List
-      }
-    }
-  },
-  {
-    url: '/vue-element-admin/drainage-test/dict',
-    type: 'get',
-    response: _ => {
-      return {
-        code: 20000,
-        data: {
-          // 1-脱敏规则字典
-          1: [
-            { label: '仿真数据', value: 1 },
-            { label: '数据屏蔽', value: 2 },
-            { label: '固定数据', value: 3 },
-            { label: '随机数据', value: 4 }
-          ],
-          // 1-规则类型字典
-          2: [
-            { label: '提交节点', value: 1 },
-            { label: '数据表字段', value: 2 }
-          ],
-          // 1-业务/服务类型字典
-          3: [
-            { label: '业务请求', value: 1 },
-            { label: '服务请求', value: 2 }
-          ]
-        }
-      }
-    }
-  },
-  {
-    url: '/vue-element-admin/drainage-test/desensitizationRuleList',
-    type: 'post',
-    response: _ => {
-      return {
-        code: 20000,
-        data: desensitizationRuleList
-      }
-    }
-  },
-  {
-    url: '/vue-element-admin/drainage-test/dbRuleList',
-    type: 'post',
-    response: _ => {
-      return {
-        code: 20000,
-        data: dbRuleList
-      }
-    }
-  },
-  {
-    url: '/vue-element-admin/drainage-test/trafficFilterList',
-    type: 'post',
-    response: _ => {
-      return {
-        code: 20000,
-        data: trafficFilterList
-      }
-    }
-  },
   {
     url: '/vue-element-admin/drainage-test/pageQueryTree',
     type: 'post',
@@ -276,45 +138,66 @@ module.exports = [
       }
     }
   },
-
   {
-    url: '/vue-element-admin/article/pv',
-    type: 'get',
-    response: _ => {
-      return {
-        code: 20000,
-        data: {
-          pvData: [
-            { key: 'PC', pv: 1024 },
-            { key: 'mobile', pv: 1024 },
-            { key: 'ios', pv: 1024 },
-            { key: 'android', pv: 1024 }
-          ]
-        }
-      }
-    }
-  },
-
-  {
-    url: '/vue-element-admin/article/create',
+    url: '/vue-element-admin/drainage-test/bussinessTableData',
     type: 'post',
     response: _ => {
       return {
         code: 20000,
-        data: 'success'
+        total: bussinessTableData.length,
+        data: bussinessTableData
       }
     }
   },
-
   {
-    url: '/vue-element-admin/article/update',
+    url: '/vue-element-admin/drainage-test/severTableData',
+    type: 'post',
+    response: config => {
+      const { page = 1, limit = 10 } = config
+      // severTableData.slice((page - 1) * limit, page * limit)
+      const pageList = severTableData.slice((page - 1) * limit, page * limit)
+      debugger
+      return {
+        code: 20000,
+        total: severTableData.length,
+        data: pageList
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/getCompareRulesInfor',
+    type: 'post',
+    response: _ => {
+      // severTableData.slice((page - 1) * limit, page * limit)
+      // const pageList = severTableData.slice((page - 1) * limit, page * limit)
+      // const pageList = data[config]
+
+      return {
+        code: 20000,
+        data: nodeList
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/analysisParmsOut',
     type: 'post',
     response: _ => {
       return {
         code: 20000,
-        data: 'success'
+        data: analysisParmsOutList
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/drainageScene',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: drainageSceneList
       }
     }
   }
+
 ]
 

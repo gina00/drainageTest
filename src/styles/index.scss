@@ -203,4 +203,17 @@ aside {
 }
 .page{
   padding: 20px;
+  .el-table{
+    border-bottom: 1px solid #eeeeee;
+  }
+  .el-table::before {
+    // left: 0;
+    // bottom: 0;
+    // width: 100%;
+    height: 0px !important; 
+}
+}
+.paginationLayout{
+  display: flex;
+  flex-direction: row-reverse;
 }

@@ -70,3 +70,38 @@ export function getMonitorData(data) {
     data
   })
 }
+export function bussinessTableData(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/bussinessTableData',
+    method: 'post',
+    data
+  })
+}
+export function severTableData(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/severTableData',
+    method: 'post',
+    data
+  })
+}
+export function getCompareRulesInfor(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/getCompareRulesInfor',
+    method: 'post',
+    data
+  })
+}
+export function analysisParmsOut(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/analysisParmsOut',
+    method: 'post',
+    data
+  })
+}
+export function drainageScene(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/drainageScene',
+    method: 'post',
+    data
+  })
+}

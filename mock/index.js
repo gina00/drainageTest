@@ -5,14 +5,18 @@ const user = require('./user')
 const role = require('./role')
 const article = require('./article')
 const search = require('./remote-search')
+const drainageManage = require('./drainage-manage')
 const drainageTest = require('./drainage-test')
+const drainageDict = require('./drainage-dict')
 
 const mocks = [
   ...user,
   ...role,
   ...article,
   ...search,
-  ...drainageTest
+  ...drainageManage,
+  ...drainageTest,
+  ...drainageDict
 ]
 
 // for front mock
