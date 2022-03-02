@@ -10,6 +10,8 @@ const compareAndFunctionCodeList = []
 const childNodeList = []
 const analysisParmsOutList = []
 const drainageSceneList = []
+const selectedSceneList = []
+const iterations = []
 
 // const baseContent = '<p>I am testing data, I am testing data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>'
 // const image_uri = 'https://wpimg.wallstcn.com/e4558086-631c-425c-9430-56ffb46e70b3'
@@ -118,6 +120,21 @@ for (let i = 0; i < 50; i++) {
     updateTime: '@date()'
   }))
 }
+for (let i = 0; i < 3; i++) {
+  iterations.push(Mock.mock({
+    iterationId: 1000000 + i,
+    iterationName: '基础迭代' + i,
+    updateTime: '@date()'
+  }))
+}
+for (let i = 0; i < 10; i++) {
+  selectedSceneList.push(Mock.mock({
+    sceneId: 1000000 + i,
+    sceneName: '测试场景' + i,
+    updateTime: '@date()',
+    iterations: iterations
+  }))
+}
 module.exports = [
   {
     url: '/vue-element-admin/drainage-test/pageQueryTree',
@@ -196,6 +213,46 @@ module.exports = [
       return {
         code: 20000,
         data: drainageSceneList
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/querySelectedScene',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: selectedSceneList
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/create',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: 'success'
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/update',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: 'success'
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/remove',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: 'success'
       }
     }
   }

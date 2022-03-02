@@ -3,6 +3,7 @@ const Mock = require('mockjs')
 // const treeList = []
 const treeChildrenList = []
 const monitorList = []
+const strategyType = []
 // const bussinessTableData = []
 // const severTableData = []
 
@@ -37,6 +38,21 @@ for (let i = 0; i < 6; i++) {
     ]
   }))
 }
+for (let i = 0; i < 6; i++) {
+  strategyType.push(Mock.mock(
+    {
+      'id': '1001702',
+      'dictType': 10017,
+      'dictKey': 'time',
+      'dictValue': '定时执行',
+      'dictDesc': '定时执行策略',
+      'createUser': null,
+      'createDate': 1564043066000,
+      'objStatus': 0,
+      'appId': 'org_app_system',
+      'other': null
+    }))
+}
 
 module.exports = [
   {
@@ -62,6 +78,44 @@ module.exports = [
           3: [
             { label: '业务请求', value: 1 },
             { label: '服务请求', value: 2 }
+          ],
+          4: [
+            { id: '1001702',
+              dictType: 10017,
+              dictKey: 'time',
+              dictValue: '定时执行',
+              dictDesc: '定时执行策略'
+            },
+            { id: '1001703',
+              dictType: 10017,
+              dictKey: 'month',
+              dictValue: '每月',
+              dictDesc: '定时执行策略'
+            },
+            { id: '1001704',
+              dictType: 10017,
+              dictKey: 'week',
+              dictValue: '每周',
+              dictDesc: '定时执行策略'
+            },
+            { id: '1001705',
+              dictType: 10017,
+              dictKey: 'day',
+              dictValue: '每天',
+              dictDesc: '定时执行策略'
+            },
+            { id: '1001706',
+              dictType: 10017,
+              dictKey: 'hour',
+              dictValue: '每隔几小时',
+              dictDesc: '定时执行策略'
+            },
+            { id: '1001707',
+              dictType: 10017,
+              dictKey: 'minute',
+              dictValue: '每隔几分钟',
+              dictDesc: '定时执行策略'
+            }
           ]
         }
       }

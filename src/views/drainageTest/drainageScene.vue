@@ -170,12 +170,12 @@ export default {
       this.drawerData.visible = !this.drawerData.visible
       if (clickType == 'add') {
         this.componentId = 'drainageSceneForm'
-        this.drawerData.title = '新增脱敏规则'
+        this.drawerData.title = '新增场景'
         this.drawerData.data = {}
         this.drawerData.data.clickType = 'add'
       } else if (clickType == 'edit') {
         this.componentId = 'drainageSceneForm'
-        this.drawerData.title = '编辑脱敏规则'
+        this.drawerData.title = '编辑场景'
         this.drawerData.data = data
         this.drawerData.data.clickType = 'edit'
       }

@@ -105,3 +105,31 @@ export function drainageScene(data) {
     data
   })
 }
+export function querySelectedScene(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/querySelectedScene',
+    method: 'post',
+    data
+  })
+}
+export function create(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/create',
+    method: 'post',
+    data
+  })
+}
+export function update(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/update',
+    method: 'post',
+    data
+  })
+}
+export function remove(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/remove',
+    method: 'post',
+    data
+  })
+}
