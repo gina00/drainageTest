@@ -114,6 +114,7 @@ for (let i = 0; i < 50; i++) {
   drainageSceneList.push(Mock.mock({
     sceneCode: 1000000 + i,
     sceneName: '测试场景' + i,
+    sceneIntroduction: '测试场景' + i,
     updateTime: '@date()'
   }))
 }

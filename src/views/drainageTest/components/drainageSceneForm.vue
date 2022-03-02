@@ -3,11 +3,12 @@
     <el-form
       ref="form"
       :model="formData"
+      :rules="rules"
       label-width="110px"
       class="content"
     >
-      <el-row>
-        <el-col :span="24">
+      <el-row :gutter="20">
+        <el-col :span="span">
           <el-form-item label="流量配置类型">
             <div style="marign-bottom:10px;">
               <el-radio v-model="formData.extractRange" label="1">全流量配置</el-radio>
@@ -21,11 +22,7 @@
               />
             </div>
           </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-form-item label="">
-          <el-col :span="24">
+          <el-form-item label="">
             <div>
               <el-radio v-model="formData.extractRange" label="2" style="margin-right:45px;">指定流量</el-radio>
               <el-date-picker
@@ -37,12 +34,8 @@
                 :disabled="formData.extractRange!='2'"
               />
             </div>
-          </el-col>
-        </el-form-item>
-      </el-row>
-      <el-row>
-        <el-form-item label="">
-          <el-col :span="24">
+          </el-form-item>
+          <el-form-item label="">
             <div>
               <p>流量业务范围</p>
               <el-input
@@ -54,8 +47,52 @@
               />
               <p>备注：不同的业务功能号，以逗号隔开。</p>
             </div>
-          </el-col>
-        </el-form-item>
+          </el-form-item>
+          <el-form-item prop="sceneName" label="场景名称">
+            <el-input
+              v-model="formData.sceneName"
+              clearable
+              maxlength="1024"
+              type="text"
+              placeholder="请输入场景名称"
+            />
+          </el-form-item>
+          <el-form-item prop="sceneName" label="场景简介">
+            <el-input
+              v-model="formData.sceneIntroduction"
+              clearable
+              maxlength="1024"
+              type="textarea"
+              :rows="5"
+              placeholder="请输入场景简介"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              size="small"
+              @click="showDialog()"
+            >
+              开始测试
+            </el-button>
+          </el-form-item>
+        </el-col>
+        <el-col v-if="isShowlogPanel" :span="24-span">
+          <el-card shadow="always" class="logPanel">
+            <div slot="header" class="clearfix">
+              <span>日志面板</span>
+              <el-button style="float: right; padding: 3px 0" type="text" @click="closeLogPanel">关闭</el-button>
+            </div>
+            <div class="contentText">
+              <span>{{ time +'&nbsp;' }}</span>
+              <span>{{ fileName+'开始...' }}</span>
+            </div>
+            <div v-for="o in 15" :key="o" class="text item">
+              <span>{{ time +'&nbsp;' }}</span>
+              <span>{{ '流量提取进行中...... ' }}</span>
+            </div>
+          </el-card>
+        </el-col>
       </el-row>
 
     </el-form>
@@ -82,13 +119,19 @@ export default {
         extractRange: '1',
         allFlowDate: '',
         someFlowDate: '',
-        flowBussiness: 1
+        flowBussiness: null,
+        sceneName: null,
+        sceneIntroduction: null
       },
       ruleTypeOptions: [],
-      ruleOptions: []
-      // rules: {
-      //   taskDesc: [{ required: true, message: '请输入FPA功能点', trigger: 'blur' }]
-      // }
+      ruleOptions: [],
+      isShowlogPanel: false,
+      span: 24,
+      time: null,
+      rules: {
+        allFlowDate: [{ required: true, message: '请选择日期', trigger: 'blur' }],
+        sceneName: [{ required: true, message: '请输入场景名称', trigger: 'blur' }]
+      }
     }
   },
   watch: {
@@ -142,6 +185,22 @@ export default {
           return false
         }
       })
+    },
+    showDialog() {
+      if (this.formData.allFlowDate == '') {
+        this.$message.warning('请选择日期')
+        return
+      }
+      this.$emit('submitStatus', { status: 'showDialog' })
+      this.span = 12
+      this.time = this.$dayjs().format('HH:mm:ss')
+      this.isShowlogPanel = true
+    },
+    closeLogPanel() {
+      this.$emit('submitStatus', { status: 'closeLogPanel' })
+      this.span = 24
+      this.time = null
+      this.isShowlogPanel = false
     }
   }
 }

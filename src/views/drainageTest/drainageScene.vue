@@ -88,7 +88,7 @@
       :visible.sync="drawerData.visible"
       direction="rtl"
       custom-class="demo-drawer"
-      size="80%"
+      :size="drawerData.size"
     >
       <component
         :is="componentId"
@@ -122,6 +122,7 @@ export default {
       drawerData: {
         visible: false,
         title: '',
+        size: '60%',
         data: {}
       },
       page: { pageNum: 1, pageSize: 10, totals: 0 },
@@ -192,16 +193,14 @@ export default {
     },
     submitStatus(val) {
       if (val.status == 'success') {
-        // 点击确定修改后返回
-        this.drawerData.visible = !this.drawerData.visible
         this.tableData.unshift(val.row)
-        // this.clickDataMap.set(this.drawerData.clickCount, val.row)
-        // this.query()
+        this.drawerData.visible = false
+      } else if (val.status == 'showDialog') {
+        this.drawerData.size = '80%'
+      } else if (val.status == 'closeLogPanel') {
+        this.drawerData.size = '60%'
       } else {
-        // // 点击取消
-        this.drawerData.visible = !this.drawerData.visible
-        const currentDrawer = this.$refs['currentDrawer']
-        currentDrawer.initForm()
+        this.drawerData.visible = false
       }
     }
   }
