@@ -14,6 +14,8 @@ const selectedSceneList = []
 const iterations = []
 const queryTaskTableList = []
 const querySceneTableList = []
+const queryStatisticalList = []
+const queryLineRealTime = []
 const list = []
 const count = 0
 
@@ -218,6 +220,56 @@ for (let i = 0; i < 50; i++) {
     }
   }))
 }
+for (let i = 0; i < 50; i++) {
+  queryStatisticalList.push(Mock.mock({
+    'id|+1': 1000000,
+    bussinessName: '测试服务' + i,
+    interfaceName: '1',
+    interfaceId: 92002040 + i,
+    type: '@integer(1, 2)',
+    maxReqTime: '1',
+    'averageRespTime|1-100': 1,
+    'averageRespTimeExperience|1-100': 1,
+    'businessSuccess|1-100': 1,
+    'businessSuccessExperience|1-100': 1,
+    'businessConsistentRate|1-100': 1,
+    'businessConsistentRateExperience': '@float(1, 100, 1, 2)',
+    startTime: '@date()',
+    endTime: '@date()'
+  }))
+}
+for (let i = 0; i < 1; i++) {
+  queryLineRealTime.push(Mock.mock({
+    'memory:usedperc': {
+      titleText: '平均响应时间(ms)',
+      'legendData': ['10.1.12.23:4444'],
+      'series': [{
+        'name': '10.1.12.23:4444',
+        'type': 'line',
+        'stack': '',
+        'data|1-300': ['@float(1, 100, 2)']
+
+      }],
+      'selected': '',
+      'xaxisDataHms': '',
+      'xaxisData|1-200': ['@date("yyyy-mm-dd")']
+    },
+    'cpu': {
+      titleText: '业务一致性(%)',
+      'legendData': ['10.1.12.23:4444'],
+      'series': [{
+        'name': '10.1.12.23:4444',
+        'type': 'line',
+        'stack': '',
+        'data|1-300': ['@float(1, 100, 2)']
+
+      }],
+      'selected': '',
+      'xaxisDataHms': '',
+      'xaxisData|1-200': ['@date(yyyy-mm-dd)']
+    }
+  }))
+}
 module.exports = [
   {
     url: '/vue-element-admin/drainage-test/pageQueryTree',
@@ -326,6 +378,26 @@ module.exports = [
       return {
         code: 20000,
         data: querySceneTableList
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/queryStatisticalData',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: queryStatisticalList
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/queryLineRealTime',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: queryLineRealTime[0]
       }
     }
   },

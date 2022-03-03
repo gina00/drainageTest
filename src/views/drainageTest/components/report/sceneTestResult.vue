@@ -14,7 +14,7 @@
         <template slot="label">
           测试结果
         </template>
-        <span>{{ result.testResult }}</span>
+        <span :style="resultObj.execStatusValue == true?'font-weight:bold;color:green':'font-weight:bold;color:red'">{{ result.testResult }}</span>
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">
@@ -111,7 +111,7 @@ export default {
       size: '',
       ruleTypeOptions: [],
       ruleOptions: [],
-      taskTableData: [],
+      resultObj: {},
       result: {}
       // rules: {
       //   taskDesc: [{ required: true, message: '请输入FPA功能点', trigger: 'blur' }]
@@ -141,6 +141,7 @@ export default {
         debugger
         var data = response.data
         var newArr = data.filter(item => item.sceneName === this.paramDataRow.sceneName)
+        this.resultObj = JSON.parse(JSON.stringify(newArr[0]))
         this.result = newArr[0].detail
         if (newArr[0].execStatusValue == true) {
           this.result.testResult = '一致'
@@ -150,39 +151,6 @@ export default {
         window.console.log(response.data.list)
       })
     }
-    // getDictData() {
-    //   dict().then(response => {
-    //     this.ruleOptions = response.data[1]
-    //     this.ruleTypeOptions = response.data[2]
-    //   })
-    // }
-    // cancel() {
-    //   this.$emit('submitStatus', { status: 'cancel', row: {}})
-    // },
-    // close() {
-    //   debugger
-    //   this.formData = Object.assign({}, this.formData, {})
-    // },
-    // confirm() {
-    //   this.$refs.form.validate((valid, message) => {
-    //     if (valid) {
-    //       this.$emit('submitStatus', { status: 'success', row: this.formData })
-    //       // this.axios
-    //       //   .post('/asset-develop/modifyreport/function/update', this.formData)
-    //       //   .then(response => {
-    //       //     if (response.respResult == '1') {
-    //       //       this.$message.success(response.respData)
-    //       //     }
-    //       //   })
-    //       //   .finally(() => {
-    //       //     this.$emit('submitStatus', { status: 'success', row: this.formData })
-    //       //   })
-    //     } else {
-    //       this.$message.error('必填项不能为空')
-    //       return false
-    //     }
-    //   })
-    // }
   }
 }
 </script>

@@ -36,7 +36,6 @@
                 node-key="id"
                 :expand-on-click-node="false"
                 :default-expanded-keys="[...defaultExpandedKey]"
-                :render-content="renderContent"
               />
             </el-col>
             <el-col :span="12">
@@ -47,7 +46,6 @@
                 node-key="id"
                 :expand-on-click-node="false"
                 :default-expanded-keys="[...defaultExpandedKey2]"
-                :render-content="renderContent"
               />
             </el-col>
           </el-row>

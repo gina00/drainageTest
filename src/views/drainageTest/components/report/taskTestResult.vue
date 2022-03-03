@@ -14,7 +14,7 @@
         <template slot="label">
           测试结果
         </template>
-        <span>{{ result.testResult }}</span>
+        <span :style="resultObj.execStatusValue == true?'font-weight:bold;color:green':'font-weight:bold;color:red'">{{ result.testResult }}</span>
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">
@@ -112,6 +112,7 @@ export default {
       ruleTypeOptions: [],
       ruleOptions: [],
       taskTableData: [],
+      resultObj: {},
       result: {}
       // rules: {
       //   taskDesc: [{ required: true, message: '请输入FPA功能点', trigger: 'blur' }]
@@ -142,6 +143,7 @@ export default {
         var data = response.data
         var newArr = data.filter(item => item.taskName === this.paramDataRow.taskName)
         this.taskTableData = newArr[0].list
+        this.resultObj = this.taskTableData[0]
         this.result = this.taskTableData[0].detail
         if (this.taskTableData[0].execStatusValue == true) {
           this.result.testResult = '一致'

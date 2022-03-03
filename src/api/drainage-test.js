@@ -126,6 +126,22 @@ export function querySceneData(data) {
     data
   })
 }
+// 请求曲线页面列表接口
+export function queryStatisticalData(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/queryStatisticalData',
+    method: 'post',
+    data
+  })
+}
+// 请求曲线页面曲线接口
+export function queryLineRealTime(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/queryLineRealTime',
+    method: 'post',
+    data
+  })
+}
 export function create(data) {
   return request({
     url: '/vue-element-admin/drainage-test/create',

@@ -27,7 +27,7 @@
         <el-button type="primary" icon="el-icon-search" @click="query">
           查询
         </el-button>
-        <el-button type="primary" icon="el-icon-refresh" @click="resetQuery">
+        <el-button icon="el-icon-refresh" @click="resetQuery">
           重置
         </el-button>
       </el-form-item>
@@ -154,11 +154,11 @@ export default {
     /**
      * 分页
      */
-    handleIndexChange1(val) {
+    handleIndexChange(val) {
       this.page.pageNum = val
       this.query()
     },
-    handleSizeChange1(val) {
+    handleSizeChange(val) {
       this.page.pageSize = val
       this.query()
     }

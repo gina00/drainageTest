@@ -159,13 +159,13 @@ export default {
     /**
      * 分页
      */
-    handleIndexChange1(val) {
-      this.page1.pageNum = val
-      this.getData()
+    handleIndexChange(val) {
+      this.page.pageNum = val
+      this.query()
     },
-    handleSizeChange1(val) {
-      this.page1.pageSize = val
-      this.getData()
+    handleSizeChange(val) {
+      this.page.pageSize = val
+      this.query()
     }
   }
 }

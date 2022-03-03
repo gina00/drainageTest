@@ -154,6 +154,10 @@ module.exports = [
               dictValue: '终止',
               dictDesc: '执行状态'
             }
+          ],
+          6: [
+            { label: '业务', value: 1 },
+            { label: '服务', value: 2 }
           ]
         }
       }

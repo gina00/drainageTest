@@ -23,7 +23,7 @@
         <el-button type="primary" icon="el-icon-search" @click="query">
           查询
         </el-button>
-        <el-button type="primary" icon="el-icon-refresh" @click="resetQuery">
+        <el-button icon="el-icon-refresh" @click="resetQuery">
           重置
         </el-button>
       </el-form-item>
@@ -40,10 +40,10 @@
     >
       <el-table-column type="selection" width="45" />
       <el-table-column type="index" label="#" width="50" align="center" />
-      <el-table-column prop="taskName" label="任务名称" align="center" />
+      <el-table-column prop="taskName" label="任务名称" align="center" min-width="180" />
       <!-- <el-table-column prop="taskTypeValue" label="任务类型" align="center">
                   </el-table-column> -->
-      <el-table-column prop="startTime" label="开始时间" align="center" width="180" />
+      <el-table-column prop="startTime" label="开始时间" align="center" min-width="180" />
       <el-table-column label="结束时间" align="center" width="180">
         <template slot-scope="{ row }">
           <template v-if="row.norunCount < 1 || row.stopCount > 0">
@@ -51,12 +51,12 @@
           </template>
         </template>
       </el-table-column>
-      <el-table-column prop="totalCount" label="总场景数" align="center" width="100" />
-      <el-table-column prop="successCount" label="成功场景数" align="center" width="100" />
-      <el-table-column prop="failedCount" label="失败场景数" align="center" width="100" />
-      <el-table-column prop="runningCount" label="正在执行场景数" align="center" width="120" />
-      <el-table-column prop="norunCount" label="未执行场景数" align="center" width="100" />
-      <el-table-column prop="successRate" label="成功率" align="center" width="130">
+      <el-table-column prop="totalCount" label="总场景数" align="center" min-width="100" />
+      <el-table-column prop="successCount" label="成功场景数" align="center" min-width="100" />
+      <el-table-column prop="failedCount" label="失败场景数" align="center" min-width="100" />
+      <el-table-column prop="runningCount" label="正在执行场景数" align="center" min-width="120" />
+      <el-table-column prop="norunCount" label="未执行场景数" align="center" min-width="100" />
+      <el-table-column prop="successRate" label="成功率" align="center" min-width="130">
         <template slot-scope="scope">
           <el-progress
             v-if="scope.row.norunCount > 0 || scope.row.runningCount > 0"
@@ -149,13 +149,13 @@ export default {
     /**
      * 分页
      */
-    handleIndexChange1(val) {
-      this.page1.pageNum = val
-      this.getData()
+    handleIndexChange(val) {
+      this.page.pageNum = val
+      this.query()
     },
-    handleSizeChange1(val) {
-      this.page1.pageSize = val
-      this.getData()
+    handleSizeChange(val) {
+      this.page.pageSize = val
+      this.query()
     }
   }
 }
