@@ -112,6 +112,20 @@ export function querySelectedScene(data) {
     data
   })
 }
+export function queryTaskTableData(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/queryTaskTableData',
+    method: 'post',
+    data
+  })
+}
+export function querySceneData(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/querySceneData',
+    method: 'post',
+    data
+  })
+}
 export function create(data) {
   return request({
     url: '/vue-element-admin/drainage-test/create',

@@ -116,6 +116,44 @@ module.exports = [
               dictValue: '每隔几分钟',
               dictDesc: '定时执行策略'
             }
+          ],
+          5: [
+            { id: '1001901',
+              dictType: 10019,
+              dictKey: '0',
+              dictValue: '未执行',
+              dictDesc: '执行状态'
+            },
+            { id: '1001902',
+              dictType: 10019,
+              dictKey: '1',
+              dictValue: '成功',
+              dictDesc: '执行状态'
+            },
+            { id: '1001903',
+              dictType: 10019,
+              dictKey: '2',
+              dictValue: '失败',
+              dictDesc: '执行状态'
+            },
+            { id: '1001904',
+              dictType: 10019,
+              dictKey: '3',
+              dictValue: '执行中',
+              dictDesc: '执行状态'
+            },
+            { id: '1001905',
+              dictType: 10019,
+              dictKey: '4',
+              dictValue: '超时',
+              dictDesc: '执行状态'
+            },
+            { id: '1001906',
+              dictType: 10019,
+              dictKey: '5',
+              dictValue: '终止',
+              dictDesc: '执行状态'
+            }
           ]
         }
       }

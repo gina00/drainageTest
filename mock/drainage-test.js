@@ -12,6 +12,10 @@ const analysisParmsOutList = []
 const drainageSceneList = []
 const selectedSceneList = []
 const iterations = []
+const queryTaskTableList = []
+const querySceneTableList = []
+const list = []
+const count = 0
 
 // const baseContent = '<p>I am testing data, I am testing data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>'
 // const image_uri = 'https://wpimg.wallstcn.com/e4558086-631c-425c-9430-56ffb46e70b3'
@@ -135,6 +139,85 @@ for (let i = 0; i < 10; i++) {
     iterations: iterations
   }))
 }
+for (let i = 0; i < 50; i++) {
+  list.push(Mock.mock({
+    'id|+1': 1,
+    parentTaskName: '引流测试任务' + i,
+    'sceneName': '引流测试场景' + (i++),
+    startTime: '@date()',
+    endTime: '@date()',
+    'execStatusValue|0-1': 0,
+    statusDesc: '引流测试场景' + i + 1,
+    'stopCount|0-1': 1
+  }))
+}
+for (let i = 0; i < 50; i++) {
+  queryTaskTableList.push(Mock.mock({
+    sceneId: 1000000 + i,
+    taskName: '引流测试任务' + i,
+    startTime: '@date()',
+    endTime: '@date()',
+    'totalCount|1-100': 100,
+    successCount: '@increment',
+    failedCount: '@increment(1)',
+    runningCount: '@increment(1)',
+    'norunCount|0-100': 1,
+    'successRate|1': [40, 50, 60, 80, 90, 100],
+    'isCoverage|1': '@boolean',
+    'stopCount|0-1': 1,
+    // 'norunCount|1': '@boolean',
+    'list|1-10': [{
+      'id|+1': 1,
+      parentTaskName: '引流测试任务' + i,
+      'sceneName': '引流测试场景' + count + 1,
+      startTime: '@date()',
+      endTime: '@date()',
+      'execStatusValue|1': '@boolean',
+      statusDesc: '引流测试场景描述' + count + 1,
+      'stopCount|0-1': 1,
+      'detail': {
+        functionCode: 92002040 + i,
+        serverType: '@integer(1, 2)',
+        reqTime: '@datetime()',
+        respTime: '@datetime()',
+        'times|500-6000': 1,
+        downloadDate: '@date()',
+        prodUrl: 'http://10.46.238.142:8089/fcgi-bin/BSSP_SFC',
+        realUrl: 'http://10.46.238.142:8089/fcgi-bin/BSSP_SFC',
+        reqMessage: '<?xml version=\"1.0\" encoding=\"GBK\"?><operation_in type=\"struct\"><organ_id type=\"int\"/><sysfunc_id type=\"int\">92002040</sysfunc_id><request_source type=\"int\">101219</request_source><operator_id type=\"string\">9998901</operator_id><request_target type=\"int\">101101</request_target><request_time type=\"datetime\">20211030144759</request_time><verify_code type=\"string\">101219200608310000000001</verify_code><service_name type=\"string\">BM_QueryUserStatus</service_name><content type=\"string\"><request type=\"struct\"><home_city type=\"int\">591</home_city><msisdn type=\"int\"></msisdn><user_id type=\"string\">591500028609324</user_id><obj_type type=\"int\">1</obj_type></request></content><cont_version type=\"string\">0100</cont_version><msg_version type=\"string\">0100</msg_version><request_type type=\"int\">1002</request_type><request_seq type=\"long\">1335941279540</request_seq></operation_in>',
+        flowRespMessage: '<?xml version=\"1.0\" encoding=\"GBK\"?><operation_in type=\"struct\"><organ_id type=\"int\"/><sysfunc_id type=\"int\">92002040</sysfunc_id><request_source type=\"int\">101219</request_source><operator_id type=\"string\">9998901</operator_id><request_target type=\"int\">101101</request_target><request_time type=\"datetime\">20211030144759</request_time><verify_code type=\"string\">101219200608310000000001</verify_code><service_name type=\"string\">BM_QueryUserStatus</service_name><content type=\"string\"><request type=\"struct\"><home_city type=\"int\">591</home_city><msisdn type=\"int\"></msisdn><user_id type=\"string\">591500028609324</user_id><obj_type type=\"int\">1</obj_type></request></content><cont_version type=\"string\">0100</cont_version><msg_version type=\"string\">0100</msg_version><request_type type=\"int\">1002</request_type><request_seq type=\"long\">1335941279540</request_seq></operation_in>',
+        testRespMessage: '<?xml version="1.0" encoding="GBK" ?><operation_out><service_name>BM_QueryUserStatus</service_name><request_type>1002</request_type><sysfunc_id>92004401</sysfunc_id><request_seq>1335941279540</request_seq><response_time>20211030144817</response_time><response_seq>200547644929</response_seq><request_source>101219</request_source><response><resp_type>0</resp_type><resp_code>0000</resp_code><resp_desc></resp_desc></response><content><response><service_status>44</service_status></response></content></operation_out>'
+
+      }
+    }]
+  }))
+}
+for (let i = 0; i < 50; i++) {
+  querySceneTableList.push(Mock.mock({
+    'id|+1': 1,
+    sceneId: 1000000 + i,
+    'sceneName': '引流测试场景' + i,
+    startTime: '@date()',
+    endTime: '@date()',
+    'execStatusValue|1': '@boolean',
+    statusDesc: '引流测试场景描述' + i,
+    'stopCount|0-1': 1,
+    'detail': {
+      parentSceneName: '引流测试场景' + i,
+      functionCode: 92002040 + i,
+      serverType: '@integer(1, 2)',
+      reqTime: '@datetime()',
+      respTime: '@datetime()',
+      'times|500-6000': 1,
+      downloadDate: '@date()',
+      prodUrl: 'http://10.46.238.142:8089/fcgi-bin/BSSP_SFC',
+      realUrl: 'http://10.46.238.142:8089/fcgi-bin/BSSP_SFC',
+      reqMessage: '<?xml version=\"1.0\" encoding=\"GBK\"?><operation_in type=\"struct\"><organ_id type=\"int\"/><sysfunc_id type=\"int\">92002040</sysfunc_id><request_source type=\"int\">101219</request_source><operator_id type=\"string\">9998901</operator_id><request_target type=\"int\">101101</request_target><request_time type=\"datetime\">20211030144759</request_time><verify_code type=\"string\">101219200608310000000001</verify_code><service_name type=\"string\">BM_QueryUserStatus</service_name><content type=\"string\"><request type=\"struct\"><home_city type=\"int\">591</home_city><msisdn type=\"int\"></msisdn><user_id type=\"string\">591500028609324</user_id><obj_type type=\"int\">1</obj_type></request></content><cont_version type=\"string\">0100</cont_version><msg_version type=\"string\">0100</msg_version><request_type type=\"int\">1002</request_type><request_seq type=\"long\">1335941279540</request_seq></operation_in>',
+      flowRespMessage: '<?xml version=\"1.0\" encoding=\"GBK\"?><operation_in type=\"struct\"><organ_id type=\"int\"/><sysfunc_id type=\"int\">92002040</sysfunc_id><request_source type=\"int\">101219</request_source><operator_id type=\"string\">9998901</operator_id><request_target type=\"int\">101101</request_target><request_time type=\"datetime\">20211030144759</request_time><verify_code type=\"string\">101219200608310000000001</verify_code><service_name type=\"string\">BM_QueryUserStatus</service_name><content type=\"string\"><request type=\"struct\"><home_city type=\"int\">591</home_city><msisdn type=\"int\"></msisdn><user_id type=\"string\">591500028609324</user_id><obj_type type=\"int\">1</obj_type></request></content><cont_version type=\"string\">0100</cont_version><msg_version type=\"string\">0100</msg_version><request_type type=\"int\">1002</request_type><request_seq type=\"long\">1335941279540</request_seq></operation_in>',
+      testRespMessage: '<?xml version="1.0" encoding="GBK" ?><operation_out><service_name>BM_QueryUserStatus</service_name><request_type>1002</request_type><sysfunc_id>92004401</sysfunc_id><request_seq>1335941279540</request_seq><response_time>20211030144817</response_time><response_seq>200547644929</response_seq><request_source>101219</request_source><response><resp_type>0</resp_type><resp_code>0000</resp_code><resp_desc></resp_desc></response><content><response><service_status>44</service_status></response></content></operation_out>'
+    }
+  }))
+}
 module.exports = [
   {
     url: '/vue-element-admin/drainage-test/pageQueryTree',
@@ -223,6 +306,26 @@ module.exports = [
       return {
         code: 20000,
         data: selectedSceneList
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/queryTaskTableData',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: queryTaskTableList
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/querySceneData',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: querySceneTableList
       }
     }
   },

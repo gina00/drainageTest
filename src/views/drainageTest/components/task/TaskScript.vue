@@ -88,16 +88,6 @@
         </div>
       </div>
     </div>
-    <EditDevice
-      :id="currentTaskId"
-      :form-title="formTitle"
-      :types="types"
-      :device="device"
-      :project-id="projectId"
-      :type="'task'"
-      :device-conf-visible="deviceConfVisible"
-      @childByValue="childByValue"
-    />
   </div>
 </template>
 <script>
