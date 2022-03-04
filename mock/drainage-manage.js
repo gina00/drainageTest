@@ -39,7 +39,7 @@ for (let i = 0; i < cleanUpTab2ListCount; i++) {
 }
 for (let i = 0; i < flowExtractionListCount; i++) {
   desensitizationRuleList.push(Mock.mock({
-    ruleCode: '@increment(100000)',
+    'ruleCode|+1': 10000000 + i,
     origin: '<msisdn>@id(10000000)</msisdn>',
     rule: '@integer(1, 3)',
     ruleName: '@ctitle()',

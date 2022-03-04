@@ -94,13 +94,13 @@
                 icon="el-icon-plus"
                 type="text"
                 title="添加"
-                @click="addParamOutEvent($index)"
+                @click="addParamOutEvent($index,'add')"
               />
               <el-button
                 icon="el-icon-edit"
                 type="text"
                 title="修改"
-                @click="handleParamOutEdit(row)"
+                @click="handleParamOutEdit(row,'edit')"
               />
               <el-button
                 icon="el-icon-delete"
@@ -326,7 +326,7 @@
 </template>
 
 <script>
-import { dict, analysisParmsOut } from '@/api/drainage-test'
+import { dict, analysisParmsOut, create, update, remove } from '@/api/drainage-test'
 // import xmlEditor from '@/views/drainageManagement/components/xmlEditor.vue'
 export default {
   components: {
@@ -431,11 +431,12 @@ export default {
         }
       })
     },
-    addParamOutEvent(index) {
+    addParamOutEvent(index, clickType) {
       this.paramOutTitle = '新增输出参数'
       this.paramOutVisible = true
       // this.sort = index + 1
       this.paramOutForm.existed = true
+      this.clickType = clickType
       // this.paramOutForm = JSON.parse(JSON.stringify('{}'))
       this.$set(this.paramOutForm, 'paramName', null)
       this.$set(this.paramOutForm, 'paramDesc', null)
@@ -454,7 +455,7 @@ export default {
       // this.paramOutForm.existed = true
       // this.paramOutForm.disorder = 0
     },
-    handleParamOutEdit(row) {
+    handleParamOutEdit(row, clickType) {
       this.paramOutVisible = true
       this.paramOutTitle = '修改参数'
       // this.sort = row.sort
@@ -464,6 +465,7 @@ export default {
         this.paramOutForm.existed = false
       }
       this.paramOutForm = JSON.parse(JSON.stringify(row))
+      this.clickType = clickType
     },
     changeMessageType() {
       if (this.paramOutForm.messageType === 1) {
@@ -480,15 +482,12 @@ export default {
           type: 'warning'
         })
         .then(() => {
-          tableData.splice(index, 1)
-          // var $url = '/autotest-interface/interface/deleteParmsById/' + row.id
-          // _ownObj.axios.post($url).then(response => {
-          //   if (response.respResult == '1') {
-          //     _ownObj.$message.success('删除成功')
-          //     _ownObj.queryParamsList('out', 1)
-          //     _ownObj.paramOutPageIndex = 1
-          //   }
-          // })
+          remove().then(response => {
+            if (response.code === 20000) {
+              this.$message.success('删除成功')
+              tableData.splice(index, 1)
+            }
+          })
         })
     },
     closeParamOut() {
@@ -505,6 +504,41 @@ export default {
       this.choseParamOutVisible = true
     },
     saveParamOut() {},
+    submitParamOuts() {
+      this.$refs.paramOutForm.validate((valid, message) => {
+        if (valid) {
+          if (this.clickType == 'add') {
+            create().then(response => {
+              if (response.code === 20000) {
+                this.$message.success('新增成功')
+                this.paramData[0].children.unshift(this.paramOutForm)
+                this.paramOutVisible = false
+              }
+            })
+          } else {
+            update().then(response => {
+              if (response.code === 20000) {
+                this.$message.success('编辑成功')
+                this.paramOutVisible = false
+              }
+            })
+          }
+          // this.axios
+          //   .post('/asset-develop/modifyreport/function/update', this.formData)
+          //   .then(response => {
+          //     if (response.respResult == '1') {
+          //       this.$message.success(response.respData)
+          //     }
+          //   })
+          //   .finally(() => {
+          //     this.$emit('submitStatus', { status: 'success', row: this.formData })
+          //   })
+        } else {
+          this.$message.error('必填项不能为空')
+          return false
+        }
+      })
+    },
     closeParamOutTable() {},
     /**
      * 分页

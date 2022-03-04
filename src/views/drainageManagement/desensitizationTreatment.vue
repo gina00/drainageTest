@@ -85,7 +85,9 @@ export default {
       this.span = 24
     },
     handleClick() {
-      this.$refs.logPanel.clearQueryLog()
+      if (this.$refs.logPanel) {
+        this.$refs.logPanel.clearQueryLog()
+      }
       this.closeLogPanel()
     }
   }

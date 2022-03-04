@@ -16,7 +16,7 @@
           </div>
           <div class="textPanel">
             <span class="nameStyle">{{ item.titleName }}</span>
-            <span class="valueStyle">{{ item.value }}</span>
+            <!-- <span class="valueStyle">{{ item.value }}</span> -->
           </div>
         </div>
       </el-card>
@@ -62,7 +62,7 @@
               type="text"
               icon="el-icon-delete"
               title="删除"
-              @click="remove(scope.row)"
+              @click="removeData(scope.row.$index,tableData)"
             />
           </template>
         </el-table-column>
@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import { dict, getMonitorData } from '@/api/drainage-test'
+import { dict, getMonitorData, remove } from '@/api/drainage-test'
 import MonitorForm from '@/views/drainageTest/components/monitorForm.vue'
 export default {
   components: {
@@ -183,7 +183,9 @@ export default {
       if (val.status == 'success') {
         // 点击确定修改后返回
         this.drawerData.visible = !this.drawerData.visible
-        this.tableData.unshift(val.row)
+        if (this.drawerData.data.clickType == 'add') {
+          this.tableData.unshift(val.row)
+        }
         // this.clickDataMap.set(this.drawerData.clickCount, val.row)
         // this.query()
       } else {
@@ -192,6 +194,20 @@ export default {
         const currentDrawer = this.$refs['currentDrawer']
         currentDrawer.initForm()
       }
+    },
+    removeData(index, tableData) {
+      this.$confirm('确定要删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        remove().then(response => {
+          if (response.code === 20000) {
+            this.$message.success('删除成功')
+            tableData.splice(index, 1)
+          }
+        })
+      })
     }
   }
 
@@ -269,13 +285,16 @@ export default {
       .textPanel {
         display: flex;
         flex-direction: column;
+        justify-content: center;
         margin-left: 20px;
+
         .valueStyle {
           font-size: 24px;
           font-weight: bold;
           color: #666;
         }
         .nameStyle {
+          font-weight: bold;
           font-size: 14px;
           color: #999;
           margin-bottom: 8px;

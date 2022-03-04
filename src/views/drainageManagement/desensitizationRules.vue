@@ -108,7 +108,7 @@
             type="text"
             icon="el-icon-delete"
             title="删除"
-            @click="remove(scope.row)"
+            @click="removeData(scope.row.$index,tableData)"
           />
         </template>
       </el-table-column>
@@ -142,7 +142,7 @@
 </template>
 
 <script>
-import { dict, desensitizationRuleList } from '@/api/drainage-test'
+import { dict, desensitizationRuleList, remove } from '@/api/drainage-test'
 import ruleForm from '@/views/drainageManagement/components/ruleForm.vue'
 
 export default {
@@ -237,7 +237,10 @@ export default {
       if (val.status == 'success') {
         // 点击确定修改后返回
         this.drawerData.visible = !this.drawerData.visible
-        this.tableData.unshift(val.row)
+        val.row.ruleCode = '10000000000'
+        if (this.drawerData.data.clickType == 'add') {
+          this.tableData.unshift(val.row)
+        }
         // this.clickDataMap.set(this.drawerData.clickCount, val.row)
         // this.query()
       } else {
@@ -246,6 +249,20 @@ export default {
         const currentDrawer = this.$refs['currentDrawer']
         currentDrawer.initForm()
       }
+    },
+    removeData(index, tableData) {
+      this.$confirm('确定要删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        remove().then(response => {
+          if (response.code === 20000) {
+            this.$message.success('删除成功')
+            tableData.splice(index, 1)
+          }
+        })
+      })
     }
   }
 }

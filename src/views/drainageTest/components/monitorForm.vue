@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { dict } from '@/api/drainage-test'
+import { dict, create, update } from '@/api/drainage-test'
 export default {
   props: {
     // eslint-disable-next-line vue/require-default-prop
@@ -95,17 +95,21 @@ export default {
     confirm() {
       this.$refs.form.validate((valid, message) => {
         if (valid) {
-          this.$emit('submitStatus', { status: 'success', row: this.formData })
-          // this.axios
-          //   .post('/asset-develop/modifyreport/function/update', this.formData)
-          //   .then(response => {
-          //     if (response.respResult == '1') {
-          //       this.$message.success(response.respData)
-          //     }
-          //   })
-          //   .finally(() => {
-          //     this.$emit('submitStatus', { status: 'success', row: this.formData })
-          //   })
+          if (this.paramData.clickType == 'add') {
+            create().then(response => {
+              if (response.code === 20000) {
+                this.$message.success('新增成功')
+                this.$emit('submitStatus', { status: 'success', row: this.formData })
+              }
+            })
+          } else {
+            update().then(response => {
+              if (response.code === 20000) {
+                this.$message.success('编辑成功')
+                this.$emit('submitStatus', { status: 'success', row: this.formData })
+              }
+            })
+          }
         } else {
           this.$message.error('必填项不能为空')
           return false

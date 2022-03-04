@@ -45,7 +45,7 @@
             type="text"
             icon="el-icon-delete"
             title="删除"
-            @click="remove(scope.row)"
+            @click="removeData(scope.row.$index,tableData)"
           />
         </template>
       </el-table-column>
@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import { flowExtractTaskList } from '@/api/drainage-test'
+import { flowExtractTaskList, remove } from '@/api/drainage-test'
 import taskForm from '@/views/drainageManagement/components/taskForm.vue'
 
 export default {
@@ -140,7 +140,9 @@ export default {
       if (val.status == 'success') {
         // 点击确定修改后返回
         this.drawerData.visible = !this.drawerData.visible
-        this.tableData.unshift(val.row)
+        if (this.drawerData.data.clickType == 'add') {
+          this.tableData.unshift(val.row)
+        }
         // this.clickDataMap.set(this.drawerData.clickCount, val.row)
         // this.query()
       } else {
@@ -149,6 +151,20 @@ export default {
         const currentDrawer = this.$refs['currentDrawer']
         currentDrawer.initForm()
       }
+    },
+    removeData(index, tableData) {
+      this.$confirm('确定要删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        remove().then(response => {
+          if (response.code === 20000) {
+            this.$message.success('删除成功')
+            tableData.splice(index, 1)
+          }
+        })
+      })
     },
     // 复选框多选及全选
     selectFun(row) {

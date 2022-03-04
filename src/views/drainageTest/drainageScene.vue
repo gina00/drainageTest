@@ -67,7 +67,7 @@
             type="text"
             icon="el-icon-delete"
             title="删除"
-            @click="remove(scope.row)"
+            @click="removeData(scope.row.$index,tableData)"
           />
         </template>
       </el-table-column>
@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import { dict, drainageScene } from '@/api/drainage-test'
+import { dict, drainageScene, remove } from '@/api/drainage-test'
 import drainageSceneForm from '@/views/drainageTest/components/drainageSceneForm.vue'
 
 export default {
@@ -193,7 +193,10 @@ export default {
     },
     submitStatus(val) {
       if (val.status == 'success') {
-        this.tableData.unshift(val.row)
+        if (this.drawerData.data.clickType == 'add') {
+          val.row.sceneCode = '10000000000'
+          this.tableData.unshift(val.row)
+        }
         this.drawerData.visible = false
       } else if (val.status == 'showDialog') {
         this.drawerData.size = '80%'
@@ -202,6 +205,20 @@ export default {
       } else {
         this.drawerData.visible = false
       }
+    },
+    removeData(index, tableData) {
+      this.$confirm('确定要删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        remove().then(response => {
+          if (response.code === 20000) {
+            this.$message.success('删除成功')
+            tableData.splice(index, 1)
+          }
+        })
+      })
     }
   }
 }

@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import { dict } from '@/api/drainage-test'
+import { dict, create, update } from '@/api/drainage-test'
 import logPanel from '@/views/drainageManagement/logPanel.vue'
 export default {
   components: {
@@ -169,7 +169,21 @@ export default {
     confirm() {
       this.$refs.form.validate((valid, message) => {
         if (valid) {
-          this.$emit('submitStatus', { status: 'success', row: this.formData })
+          if (this.paramData.clickType == 'add') {
+            create().then(response => {
+              if (response.code === 20000) {
+                this.$message.success('新增成功')
+                this.$emit('submitStatus', { status: 'success', row: this.formData })
+              }
+            })
+          } else {
+            update().then(response => {
+              if (response.code === 20000) {
+                this.$message.success('编辑成功')
+                this.$emit('submitStatus', { status: 'success', row: this.formData })
+              }
+            })
+          }
           // this.axios
           //   .post('/asset-develop/modifyreport/function/update', this.formData)
           //   .then(response => {

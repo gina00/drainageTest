@@ -95,6 +95,10 @@ export default {
 
     submitSelect(val) {
       if (val.status == 'success') {
+        if (val.rows.length == 0) {
+          this.$message.warning('请至少选择一条数据')
+          return
+        }
         this.showlogPanel = true
         this.span = 16
         this.startNowTime = this.$dayjs().format('HH:mm:ss')
