@@ -23,30 +23,8 @@
           :showlog-panel="showlogPanel"
           :file-name="fileName"
           @closeLogPanel="closeLogPanel"
+          @btnClickFun="btnClickFun"
         />
-        <!-- <el-card
-          shadow="always"
-          class="logPanel commonHeight"
-          style="height:calc(100vh - 200px)"
-        >
-          <div slot="header" class="clearfix">
-            <span>日志面板</span>
-            <el-button style="float: right; padding: 3px 0" type="text" @click="closeLogPanel">关闭</el-button>
-          </div>
-          <div class="contentText">
-            <span>{{ time +'&nbsp;' }}</span>
-            <span>{{ fileName+'开始...' }}</span>
-          </div>
-          <div v-for="(item,index) in logList" :key="index" class="text item">
-            <span>{{ item }}</span>
-          </div> -->
-        <!-- <div v-for="o in 15" :key="o" class="text item">
-            <span>{{ time +'&nbsp;' }}</span>
-            <span v-if="activeName=='tab1'">{{ '流量提取进行中...... ' }}</span>
-            <span v-if="activeName=='tab2'">{{ ' 文件：测试日志文件1解析开始...... ' }}</span>
-            <span v-if="activeName=='tab3'">{{ ' 流量清理进行中...... ' }}</span>
-          </div> -->
-        <!-- </el-card> -->
       </el-col>
     </el-row>
   </div>
@@ -122,7 +100,9 @@ export default {
       this.span = 24
     },
     handleClick(tab) {
-      this.$refs.logPanel.clearQueryLog()
+      if (this.$refs.logPanel) {
+        this.$refs.logPanel.clearQueryLog()
+      }
       this.closeLogPanel()
     }
   }

@@ -86,6 +86,13 @@ export default {
   components: {
     taskForm
   },
+  // props: {
+  //   // eslint-disable-next-line vue/require-default-prop
+  //   btnClickDisable: {
+  //     type: Boolean,
+  //     required: false
+  //   }
+  // },
   data() {
     return {
       loading: false,

@@ -39,20 +39,20 @@ for (let i = 0; i < cleanUpTab2ListCount; i++) {
 }
 for (let i = 0; i < flowExtractionListCount; i++) {
   desensitizationRuleList.push(Mock.mock({
-    'ruleCode|+1': 10000000 + i,
+    'ruleCode|+1': 1000000000 + i,
     origin: '<msisdn>@id(10000000)</msisdn>',
     rule: '@integer(1, 3)',
-    ruleName: '@ctitle()',
+    'ruleName|1': ['手机号码规则', '身份证号规则', '姓名规则', '手机号码规则1', '身份证号规则1', '姓名规则1', '手机号码规则2', '身份证号规则2', '姓名规则2'],
     ruleType: '@integer(1, 2)',
     newVal: '<msisdn>@increment(10000000)</msisdn>'
   }))
 }
 for (let i = 0; i < flowExtractionListCount; i++) {
   dbRuleList.push(Mock.mock({
-    ruleCode: '@increment(200000)',
+    'ruleCode|+1': 2000000000 + i,
     origin: '<msisdn>@id(20000000)</msisdn>',
     rule: '@integer(1, 3)',
-    ruleName: '@ctitle()',
+    'ruleName|1': ['手机号码规则', '身份证号规则', '姓名规则', '手机号码规则1', '身份证号规则1', '姓名规则1', '手机号码规则2', '身份证号规则2', '姓名规则2'],
     ruleType: '@integer(1, 2)',
     newVal: '<msisdn>@increment(20000000)</msisdn>'
   }))
@@ -83,58 +83,6 @@ module.exports = [
         code: 20000,
         data: {
           list: flowExtractionList
-          // list: [
-          //   {
-          //     flowTaskName: '流量提取任务20220210',
-          //     taskDesc: '流量提取任务20220210',
-          //     targetHost: '10.1.1.113',
-          //     loginUser: 'admin',
-          //     loginPassWord: '111111',
-          //     extractPath: '/root',
-          //     extractRange: '2',
-          //     fileType: 'root.zip'
-          //   },
-          //   {
-          //     flowTaskName: '流量提取任务20220208',
-          //     taskDesc: '流量提取任务20220208',
-          //     targetHost: '10.1.9.191',
-          //     loginUser: 'admin',
-          //     loginPassWord: '111111',
-          //     extractPath: '/root',
-          //     extractRange: '2',
-          //     fileType: 'root.zip'
-          //   },
-          //   {
-          //     flowTaskName: '流量提取任务20220215',
-          //     taskDesc: '流量提取任务20220215',
-          //     targetHost: '10.1.2.176',
-          //     loginUser: 'admin',
-          //     loginPassWord: '111111',
-          //     extractPath: '/root',
-          //     extractRange: '2',
-          //     fileType: 'root.zip'
-          //   },
-          //   {
-          //     flowTaskName: '流量提取任务20220215',
-          //     taskDesc: '流量提取任务20220215',
-          //     targetHost: '10.1.2.176',
-          //     loginUser: 'admin',
-          //     loginPassWord: '111111',
-          //     extractPath: '/root',
-          //     extractRange: '2',
-          //     fileType: 'root.zip'
-          //   },
-          //   {
-          //     flowTaskName: '流量提取任务20220215',
-          //     taskDesc: '流量提取任务20220215',
-          //     targetHost: '10.1.2.176',
-          //     loginUser: 'admin',
-          //     loginPassWord: '111111',
-          //     extractPath: '/root',
-          //     extractRange: '2',
-          //     fileType: 'root.zip'
-          //   }
-          // ]
         }
       }
     }
