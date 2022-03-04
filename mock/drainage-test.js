@@ -1,7 +1,6 @@
 const Mock = require('mockjs')
 
 const treeList = []
-const treeChildrenList = []
 const monitorList = []
 const bussinessTableData = []
 const severTableData = []
@@ -28,34 +27,31 @@ for (let i = 0; i < 15; i++) {
     reqType: '@integer(1, 2)'
   }))
 }
-for (let i = 0; i < 6; i++) {
-  treeChildrenList.push(Mock.mock({
-    id: '@increment(10)',
-    'label|1': [
-      'product_area_def',
-      'ng_product_channel_cfg',
-      'ini_config',
-      'connection_source_def',
-      'dtl_schema_def',
-      'base_query_route_rule',
-      'user_product',
-      'user_product_deatil',
-      'user_product_common_para',
-      'crm_bill_operation',
-      'user_product_para',
-      'user_services',
-      'user_service_para',
-      'user_bons_deal',
-      'boss_sms_send_operation'
-    ]
-  }))
-}
 
 for (let i = 0; i < 10; i++) {
   treeList.push(Mock.mock({
-    id: '@increment(1)',
+    id: '@id',
     'label|1': ['CCS', 'PMS', 'NOTIFY', 'ORD', 'MANAFE', 'CCS1', 'PMS1', 'NOTIFY1', 'ORD1', 'MANAFE1'],
-    children: treeChildrenList
+    'children|1-6': [{
+      'id|+1': '@id',
+      'label|1': [
+        'product_area_def',
+        'ng_product_channel_cfg',
+        'ini_config',
+        'connection_source_def',
+        'dtl_schema_def',
+        'base_query_route_rule',
+        'user_product',
+        'user_product_deatil',
+        'user_product_common_para',
+        'crm_bill_operation',
+        'user_product_para',
+        'user_services',
+        'user_service_para',
+        'user_bons_deal',
+        'boss_sms_send_operation'
+      ]
+    }]
   }))
 }
 
@@ -428,6 +424,68 @@ module.exports = [
       return {
         code: 20000,
         data: 'success'
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/getLog',
+    type: 'get',
+    response: config => {
+      const { type } = config.query
+      var data = {}
+      // 流量提取
+      if (type == 1) {
+        data = Mock.mock({
+          'time|+30': '@now(HH:mm:ss)',
+          'logInformation': '流量提取进行中......',
+          'fileCount|1-100': 1
+        })
+      } else if (type == 2) {
+        // 解析流量
+        data = Mock.mock({
+          'time|+30': '@now(HH:mm:ss)',
+          'logInformation': '测试日志文件1解析流量进行中......',
+          'fileCount|1-100': 1
+        })
+      } else if (type == 3) {
+        // 流量清理
+        data = Mock.mock({
+          'time|+30': '@now(HH:mm:ss)',
+          'logInformation': '流量清理进行中.......',
+          'fileCount|1-100': 1
+        })
+      } else if (type == 4) {
+        // 流量脱敏
+        data = Mock.mock({
+          'time|+30': '@now(HH:mm:ss)',
+          'logInformation': '流量脱敏处理进行中.......',
+          'fileCount|1-100': 1
+        })
+      } else if (type == 5) {
+        // 数据表脱敏
+        data = Mock.mock({
+          'time|+30': '@now(HH:mm:ss)',
+          'logInformation': '数据表脱敏处理进行中.......',
+          'fileCount|1-100': 1
+        })
+      } else if (type == 6) {
+        // 基准数据同步
+        data = Mock.mock({
+          'time|+30': '@now(HH:mm:ss)',
+          'logInformation': '同步进行中.......',
+          'fileCount|1-100': 1
+        })
+      } else if (type == 7) {
+        // 场景流量测试
+        data = Mock.mock({
+          'time|+30': '@now(HH:mm:ss)',
+          'logInformation': '流量测试进行中.......',
+          'fileCount|1-100': 1
+        })
+      }
+      return {
+        code: 20000,
+        data: data
       }
     }
   }

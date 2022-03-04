@@ -162,7 +162,7 @@ export default {
       this.$emit('submitSelect', { status: 'success', rows: selectDataArr })
     },
     startFlowExtract() {
-      this.submitSelect(this.selectDataArr)
+      this.submitSelect(this.selectDataArr, { type: 1 })
     },
     /**
      * 分页

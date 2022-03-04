@@ -77,21 +77,15 @@
             </el-button>
           </el-form-item>
         </el-col>
-        <el-col v-if="isShowlogPanel" :span="24-span">
-          <el-card shadow="always" class="logPanel">
-            <div slot="header" class="clearfix">
-              <span>日志面板</span>
-              <el-button style="float: right; padding: 3px 0" type="text" @click="closeLogPanel">关闭</el-button>
-            </div>
-            <div class="contentText">
-              <span>{{ time +'&nbsp;' }}</span>
-              <span>{{ fileName+'开始...' }}</span>
-            </div>
-            <div v-for="o in 15" :key="o" class="text item">
-              <span>{{ time +'&nbsp;' }}</span>
-              <span>{{ '流量提取进行中...... ' }}</span>
-            </div>
-          </el-card>
+        <el-col v-if="showlogPanel" :span="24-span">
+          <log-panel
+            ref="logPanel"
+            :start-now-time="startNowTime"
+            :query-log-type="queryLogType"
+            :showlog-panel="showlogPanel"
+            :file-name="fileName"
+            @closeLogPanel="closeLogPanel"
+          />
         </el-col>
       </el-row>
 
@@ -105,7 +99,11 @@
 
 <script>
 import { dict } from '@/api/drainage-test'
+import logPanel from '@/views/drainageManagement/logPanel.vue'
 export default {
+  components: {
+    logPanel
+  },
   props: {
     // eslint-disable-next-line vue/require-default-prop
     paramData: {
@@ -125,9 +123,11 @@ export default {
       },
       ruleTypeOptions: [],
       ruleOptions: [],
-      isShowlogPanel: false,
+      fileName: '',
+      startNowTime: null,
       span: 24,
-      time: null,
+      showlogPanel: false,
+      queryLogType: null,
       rules: {
         allFlowDate: [{ required: true, message: '请选择日期', trigger: 'blur' }],
         sceneName: [{ required: true, message: '请输入场景名称', trigger: 'blur' }]
@@ -193,14 +193,17 @@ export default {
       }
       this.$emit('submitStatus', { status: 'showDialog' })
       this.span = 12
-      this.time = this.$dayjs().format('HH:mm:ss')
-      this.isShowlogPanel = true
+      this.startNowTime = this.$dayjs().format('HH:mm:ss')
+      this.showlogPanel = true
+      this.fileName = '场景流量测试'
+      this.queryLogType = 7
     },
     closeLogPanel() {
       this.$emit('submitStatus', { status: 'closeLogPanel' })
+      this.startNowTime = null
+      this.queryLogType = null
+      this.showlogPanel = false
       this.span = 24
-      this.time = null
-      this.isShowlogPanel = false
     }
   }
 }

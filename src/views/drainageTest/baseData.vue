@@ -8,10 +8,8 @@
               <el-form-item label="同步时间">
                 <el-date-picker
                   v-model="formData.synchronousDate"
-                  type="daterange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
+                  type="date"
+                  placeholder="选择日期"
                 />
               </el-form-item>
               <el-form-item>
@@ -29,8 +27,9 @@
           </div>
           <el-row :gutter="20">
             <el-col :span="12" style="border-right:1px solid #eeeeee">
-              <el-checkbox v-model="checked1">配置类</el-checkbox>
+              <el-checkbox v-model="checked1" @change="pickAll('tree1',checked1)">配置类</el-checkbox>
               <el-tree
+                ref="tree1"
                 :data="data"
                 show-checkbox
                 node-key="id"
@@ -39,8 +38,9 @@
               />
             </el-col>
             <el-col :span="12">
-              <el-checkbox v-model="checked2">用户资料类</el-checkbox>
+              <el-checkbox v-model="checked2" @change="pickAll('tree2',checked2)">用户资料类</el-checkbox>
               <el-tree
+                ref="tree2"
                 :data="data2"
                 show-checkbox
                 node-key="id"
@@ -52,21 +52,15 @@
           <!-- </el-card></div></el-card> -->
         </el-card>
       </el-col>
-      <el-col :span="24-span">
-        <el-card shadow="always" class="logPanel">
-          <div slot="header" class="clearfix">
-            <span>日志面板</span>
-            <el-button style="float: right; padding: 3px 0" type="text" @click="closeLogPanel">关闭</el-button>
-          </div>
-          <div class="contentText">
-            <span>{{ time +'&nbsp;' }}</span>
-            <span>{{ fileName+'开始...' }}</span>
-          </div>
-          <div v-for="o in 15" :key="o" class="text item">
-            <span>{{ time +'&nbsp;' }}</span>
-            <span>{{ '同步进行中...... ' }}</span>
-          </div>
-        </el-card>
+      <el-col v-if="showlogPanel" :span="24-span">
+        <log-panel
+          ref="logPanel"
+          :start-now-time="startNowTime"
+          :query-log-type="queryLogType"
+          :showlog-panel="showlogPanel"
+          :file-name="fileName"
+          @closeLogPanel="closeLogPanel"
+        />
       </el-col>
     </el-row>
 
@@ -75,7 +69,11 @@
 
 <script>
 import { pageQueryTree } from '@/api/drainage-test'
+import logPanel from '@/views/drainageManagement/logPanel.vue'
 export default {
+  components: {
+    logPanel
+  },
   data() {
     const data = [{
       id: 1,
@@ -116,12 +114,13 @@ export default {
       formData: {
         synchronousDate: ''
       },
+      fileName: '',
+      startNowTime: '',
       span: 24,
-      fileName: null,
-      time: null,
+      showlogPanel: false,
+      queryLogType: null,
       checked1: false,
       checked2: false,
-      isShowlogPanel: false,
       data: JSON.parse(JSON.stringify(data)),
       data2: JSON.parse(JSON.stringify(data)),
       defaultExpandedKey: null,
@@ -133,6 +132,7 @@ export default {
   },
   methods: {
     getData() {
+      this.formData.synchronousDate = this.$dayjs().format('YYYY-MM-DD')
       this.loading = true
       pageQueryTree().then(response => {
         this.data = JSON.parse(JSON.stringify(response.data))
@@ -144,17 +144,56 @@ export default {
       })
     },
     start() {
-      this.isShowlogPanel = true
+      this.queryLogType = 6
+      this.showlogPanel = true
+      this.startNowTime = this.$dayjs().format('HH:mm:ss')
+      this.fileName = '基准数据同步 '
       this.span = 16
-      this.time = this.$dayjs().format('HH:mm:ss')
-      this.fileName = '同步 '
     },
-    closeLogPanel() {
-      this.isShowlogPanel = false
+    closeLogPanel(val) {
+      this.queryLogType = null
+      this.showlogPanel = false
       this.span = 24
     },
     setCheckedKey() {
 
+    },
+    /**
+     * 全选 el-tree 节点
+     */
+    // 全选
+    selectAllNodes: function(tree, data) {
+      //  获取根节点
+      const rootNode = tree.getNode(data[0].id).parent
+      travelNodes(rootNode)
+      function travelNodes(tmpRoot) {
+        // 选中该节点
+        tmpRoot.checked = true
+        // 叶子节点
+        if (tmpRoot.childNodes.length === 0) {
+          return
+        // eslint-disable-next-line brace-style
+        }
+        // 不是叶子节点,递归遍历
+        else {
+          const tmpChildNoes = tmpRoot.childNodes
+          for (let i = 0; i < tmpChildNoes.length; i++) {
+            travelNodes(tmpChildNoes[i])
+          }
+        }
+      }
+    },
+    // 清空
+    clearAllNodes: function(tree) {
+      tree.setCheckedKeys([])
+    },
+    pickAll(treeName, checkedStatus) {
+      const treeObj = this.$refs[treeName]
+      if (checkedStatus) {
+        this.selectAllNodes(treeObj, this.data)
+      } else {
+        this.clearAllNodes(treeObj)
+      }
     }
   }
 }

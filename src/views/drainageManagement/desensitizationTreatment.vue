@@ -12,22 +12,15 @@
           </el-tab-pane>
         </el-tabs>
       </el-col>
-      <el-col v-if="isShowlogPanel" :span="24-span">
-        <el-card shadow="always" class="logPanel">
-          <div slot="header" class="clearfix">
-            <span>日志面板</span>
-            <el-button style="float: right; padding: 3px 0" type="text" @click="closeLogPanel">关闭</el-button>
-          </div>
-          <div class="contentText">
-            <span>{{ time +'&nbsp;' }}</span>
-            <span>{{ fileName+'开始...' }}</span>
-          </div>
-          <div v-for="o in 15" :key="o" class="text item">
-            <span>{{ time +'&nbsp;' }}</span>
-            <span v-if="activeName=='tab1'">{{ '脱敏处理进行中...... ' }}</span>
-            <span v-if="activeName=='tab2'">{{ ' 脱敏处理进行中...... ' }}</span>
-          </div>
-        </el-card>
+      <el-col v-if="showlogPanel" :span="24-span">
+        <log-panel
+          ref="logPanel"
+          :start-now-time="startNowTime"
+          :query-log-type="queryLogType"
+          :showlog-panel="showlogPanel"
+          :file-name="fileName"
+          @closeLogPanel="closeLogPanel"
+        />
       </el-col>
     </el-row>
   </div>
@@ -36,10 +29,12 @@
 <script>
 import flowdesTab1 from '@/views/drainageManagement/components/flowdesTab1.vue'
 import flowdesTab2 from '@/views/drainageManagement/components/flowdesTab2.vue'
+import logPanel from '@/views/drainageManagement/logPanel.vue'
 export default {
   components: {
     flowdesTab1,
-    flowdesTab2
+    flowdesTab2,
+    logPanel
   },
   data() {
     return {
@@ -59,33 +54,38 @@ export default {
         address: '上海市普陀区金沙江路 1516 弄'
       }],
       fileName: '',
-      time: null,
+      startNowTime: null,
       span: 24,
-      isShowlogPanel: false
+      showlogPanel: false,
+      queryLogType: null
     }
   },
   methods: {
     submitSelect(val) {
       if (val.status == 'success') {
-        this.isShowlogPanel = true
+        this.showlogPanel = true
         this.span = 16
-        this.time = this.$dayjs().format('HH:mm:ss')
+        this.startNowTime = this.$dayjs().format('HH:mm:ss')
       }
       if (val.rows) {
         if (this.activeName == 'tab1') {
           this.fileName = '脱敏处理'
+          this.queryLogType = 4
         } else if (this.activeName == 'tab2') {
           this.fileName = '脱敏处理'
+          this.queryLogType = 5
         } else {
           this.fileName = '流量清理'
         }
       }
     },
-    closeLogPanel() {
-      this.isShowlogPanel = false
+    closeLogPanel(val) {
+      this.queryLogType = null
+      this.showlogPanel = false
       this.span = 24
     },
     handleClick() {
+      this.$refs.logPanel.clearQueryLog()
       this.closeLogPanel()
     }
   }

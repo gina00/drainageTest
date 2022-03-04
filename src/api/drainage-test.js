@@ -163,3 +163,10 @@ export function remove(data) {
     data
   })
 }
+export function getLog(type) {
+  return request({
+    url: '/vue-element-admin/drainage-test/getLog',
+    method: 'get',
+    params: { type }
+  })
+}
