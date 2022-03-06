@@ -29,15 +29,15 @@ for (let i = 0; i < flowExtractionListCount; i++) {
 }
 for (let i = 0; i < cleanUpTab2ListCount; i++) {
   cleanUpTab2List.push(Mock.mock({
-    flowTaskName: '@increment'
+    flowTaskName: 1000000 + i
   }))
 }
 for (let i = 0; i < cleanUpTab2ListCount; i++) {
   cleanUpTab3List.push(Mock.mock({
-    flowTaskName: '@increment'
+    flowTaskName: 1000000 + i
   }))
 }
-for (let i = 0; i < flowExtractionListCount; i++) {
+for (let i = 0; i < 45; i++) {
   desensitizationRuleList.push(Mock.mock({
     'ruleCode|+1': 1000000000 + i,
     origin: '<msisdn>@id(10000000)</msisdn>',
@@ -47,7 +47,7 @@ for (let i = 0; i < flowExtractionListCount; i++) {
     newVal: '<msisdn>@increment(10000000)</msisdn>'
   }))
 }
-for (let i = 0; i < flowExtractionListCount; i++) {
+for (let i = 0; i < 35; i++) {
   dbRuleList.push(Mock.mock({
     'ruleCode|+1': 2000000000 + i,
     origin: '<msisdn>@id(20000000)</msisdn>',
@@ -57,7 +57,7 @@ for (let i = 0; i < flowExtractionListCount; i++) {
     newVal: '<msisdn>@increment(20000000)</msisdn>'
   }))
 }
-for (let i = 0; i < flowExtractionListCount; i++) {
+for (let i = 0; i < 51; i++) {
   trafficFilterList.push(Mock.mock({
     'city|591-600': 1,
     functionCode: '@id(100000000)',
@@ -83,7 +83,8 @@ module.exports = [
         code: 20000,
         data: {
           list: flowExtractionList
-        }
+        },
+        total: flowExtractionList.length
       }
     }
   },
@@ -114,7 +115,8 @@ module.exports = [
     response: _ => {
       return {
         code: 20000,
-        data: desensitizationRuleList
+        data: desensitizationRuleList,
+        total: desensitizationRuleList.length
       }
     }
   },
@@ -124,7 +126,8 @@ module.exports = [
     response: _ => {
       return {
         code: 20000,
-        data: dbRuleList
+        data: dbRuleList,
+        total: dbRuleList.length
       }
     }
   },
@@ -134,7 +137,8 @@ module.exports = [
     response: _ => {
       return {
         code: 20000,
-        data: trafficFilterList
+        data: trafficFilterList,
+        total: trafficFilterList.length
       }
     }
   }

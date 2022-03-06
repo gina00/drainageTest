@@ -13,6 +13,7 @@
         </el-button>
         <el-button
           size="small"
+          :disabled="btnClickDisabled"
           @click="startFlowExtract()"
         >
           开始提取流量
@@ -24,13 +25,13 @@
     <el-table
       v-loading="loading"
       class="commonHeight"
-      :data="tableData"
+      :data="tableData.slice((page.pageNum - 1) * page.pageSize, page.pageNum * page.pageSize)"
       border
       style="width: 100%"
       @select="selectFun"
       @select-all="selectAllFun"
     >
-      <el-table-column type="selection" width="50" />
+      <el-table-column type="selection" width="50" align="center" />
       <el-table-column label="序号" type="index" width="50" />
       <el-table-column prop="flowTaskName" label="任务名称" min-width="180" align="center" />
       <el-table-column label="操作">
@@ -86,13 +87,13 @@ export default {
   components: {
     taskForm
   },
-  // props: {
-  //   // eslint-disable-next-line vue/require-default-prop
-  //   btnClickDisable: {
-  //     type: Boolean,
-  //     required: false
-  //   }
-  // },
+  props: {
+    // eslint-disable-next-line vue/require-default-prop
+    logCountDisabeled: {
+      type: Boolean,
+      required: false
+    }
+  },
   data() {
     return {
       loading: false,
@@ -104,7 +105,18 @@ export default {
         data: {}
       },
       page: { pageNum: 1, pageSize: 10, totals: 0 },
-      selectDataArr: []
+      selectDataArr: [],
+      btnClickDisabled: false,
+      startClick: 0
+    }
+  },
+  watch: {
+    logCountDisabeled() {
+      if (!this.logCountDisabeled) {
+        this.btnClickDisabled = false
+      } else {
+        this.btnClickDisabled = true
+      }
     }
   },
   mounted() {
@@ -115,6 +127,7 @@ export default {
       this.loading = true
       flowExtractTaskList().then(response => {
         this.tableData = response.data.list
+        this.page.totals = response.total
       }).finally(() => {
         this.loading = false
       })
@@ -182,9 +195,10 @@ export default {
       this.selectDataArr = row
     },
     submitSelect(selectDataArr) {
-      this.$emit('submitSelect', { status: 'success', rows: selectDataArr })
+      this.$emit('submitSelect', { status: 'success', rows: selectDataArr, startClick: this.startClick })
     },
     startFlowExtract() {
+      this.startClick = this.startClick + 1
       this.submitSelect(this.selectDataArr, { type: 1 })
     },
     /**

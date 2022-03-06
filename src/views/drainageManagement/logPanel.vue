@@ -48,6 +48,10 @@ export default {
     queryLogType: {
       type: Number,
       required: true
+    },
+    startClick: {
+      type: Number,
+      required: true
     }
   },
   data() {
@@ -62,6 +66,14 @@ export default {
     queryLogType() {
       if (this.queryLogType == null) {
         this.clearQueryLog()
+      }
+    },
+    startClick() {
+      debugger
+      if (this.startClick > 1) {
+        this.count = 0
+        this.logList = []
+        this.getLogList(this.queryLogType)
       }
     },
     count() {
@@ -93,6 +105,7 @@ export default {
   },
   mounted() {
     if (this.showlogPanel) {
+      this.count = 0
       this.getLogList(this.queryLogType)
     }
   },
@@ -116,11 +129,11 @@ export default {
         .finally(() => {
           this.count = this.count + 1
           this.setTimeoutFunc(type)
+          this.$emit('watchLogCount', this.count)
         })
     },
     // 定时任务
     setTimeoutFunc(type) {
-      debugger
       const _this = this
       _this.timeId = setTimeout(() => {
         _this.getLogList(type)

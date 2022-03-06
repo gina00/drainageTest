@@ -42,12 +42,12 @@
     <el-table
       v-loading="loading"
       class="commonHeight"
-      :data="tableData"
+      :data="tableData.slice((page.pageNum - 1) * page.pageSize, page.pageNum * page.pageSize)"
       border
       style="width: 100%"
     >
       <!-- <el-table-column type="selection" width="50" /> -->
-      <el-table-column label="序号" type="index" width="50" />
+      <el-table-column label="序号" type="index" width="50" align="center" />
       <el-table-column prop="city" label="地市" min-width="180" align="center" />
       <el-table-column prop="functionCode" label="业务/服务功能号" min-width="180" align="center" />
       <el-table-column prop="serverType" label="业务(服务)类型" min-width="180" align="center">
@@ -168,6 +168,7 @@ export default {
       this.loading = true
       trafficFilterList().then(response => {
         this.tableData = response.data
+        this.page.totals = response.total
       }).finally(() => {
         this.loading = false
       })

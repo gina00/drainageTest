@@ -11,10 +11,8 @@
         </template>
         <el-table
           v-loading="loading"
-          class="commonHeight"
-          :data="compareAndFunctionCodeList"
+          :data="compareAndFunctionCodeList.slice((page1.pageNum - 1) * page1.pageSize, page1.pageNum * page1.pageSize)"
           border
-          style="width: 100%;height:calc(100vh - 690px)"
         >
           <!-- <el-table-column label="序号" type="index" width="50" align="center" /> -->
           <el-table-column prop="compareRuleCode" label="比对规则编号" min-width="120" align="center" />
@@ -58,10 +56,9 @@
         </el-descriptions>
         <el-table
           ref="customColumnTable"
-          :data="paramData[0].children"
+          :data="paramData[0].children.slice((page2.pageNum - 1) * page2.pageSize, page2.pageNum * page2.pageSize)"
           border
           :loading="loading"
-          height="calc(100vh - 690px)"
           width="100%"
           row-key="id"
           style="margin-top:10px"
@@ -114,13 +111,13 @@
         <div class="paginationLayout">
           <el-pagination
             style="float:right;margin-top:20px"
-            :current-page="page1.pageNum"
+            :current-page="page2.pageNum"
             :page-sizes="[10, 20, 50, 100]"
-            :page-size="page1.pageSize"
+            :page-size="page2.pageSize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="page1.totals"
-            @size-change="handleSizeChange1"
-            @current-change="handleIndexChange1"
+            :total="page2.totals"
+            @size-change="handleSizeChange2"
+            @current-change="handleIndexChange2"
           />
         </div>
       </el-collapse-item>
@@ -326,7 +323,7 @@
 </template>
 
 <script>
-import { dict, analysisParmsOut, create, update, remove } from '@/api/drainage-test'
+import { dict, analysisParmsOut, create, update, remove, submit } from '@/api/drainage-test'
 // import xmlEditor from '@/views/drainageManagement/components/xmlEditor.vue'
 export default {
   components: {
@@ -375,6 +372,7 @@ export default {
       ruleTypeOptions: [],
       ruleOptions: [],
       page1: { pageNum: 1, pageSize: 10, totals: 0 },
+      page2: { pageNum: 1, pageSize: 10, totals: 0 },
       paramOutFormRules: {
         taskDesc: [{ required: true, message: '请输入FPA功能点', trigger: 'blur' }]
       }
@@ -400,6 +398,8 @@ export default {
       this.specData = this.paramData[0].children
       this.checkOutForm.responseMessage = this.specData[0].responseMessage
       this.compareAndFunctionCodeList = this.paramData[0].compareAndFunctionCodeList
+      this.page1.totals = this.compareAndFunctionCodeList.length
+      this.page2.totals = this.paramData[0].children.length
       // this.getDictData()
       // if (this.paramData.clickType == 'add') {
       //   this.formData = JSON.parse(JSON.stringify(this.paramData))
@@ -503,7 +503,14 @@ export default {
       })
       this.choseParamOutVisible = true
     },
-    saveParamOut() {},
+    saveParamOut() {
+      submit().then(response => {
+        if (response.code === 20000) {
+          this.$message.success('提交成功')
+          this.choseParamOutVisible = false
+        }
+      })
+    },
     submitParamOuts() {
       this.$refs.paramOutForm.validate((valid, message) => {
         if (valid) {
@@ -550,6 +557,14 @@ export default {
     handleSizeChange1(val) {
       this.page1.pageSize = val
       this.getData()
+    },
+    handleIndexChange2(val) {
+      this.page2.pageNum = val
+      this.getData()
+    },
+    handleSizeChange2(val) {
+      this.page2.pageSize = val
+      this.getData()
     }
   }
 }
@@ -561,9 +576,6 @@ export default {
     justify-content: flex-end;
     width: 100%;
     background: #fff;
-    position: absolute;
-    bottom: 10px;
-    right: 20px;
   }
   .radioPanel{
     display: flex;

@@ -216,7 +216,7 @@ for (let i = 0; i < 50; i++) {
     }
   }))
 }
-for (let i = 0; i < 50; i++) {
+for (let i = 0; i < 10; i++) {
   queryStatisticalList.push(Mock.mock({
     'id|+1': 1000000,
     bussinessName: '测试服务' + i,
@@ -283,7 +283,8 @@ module.exports = [
     response: _ => {
       return {
         code: 20000,
-        data: monitorList
+        data: monitorList,
+        total: monitorList.length
       }
     }
   },
@@ -343,7 +344,8 @@ module.exports = [
     response: _ => {
       return {
         code: 20000,
-        data: drainageSceneList
+        data: drainageSceneList,
+        total: drainageSceneList.length
       }
     }
   },
@@ -363,7 +365,8 @@ module.exports = [
     response: _ => {
       return {
         code: 20000,
-        data: queryTaskTableList
+        data: queryTaskTableList,
+        total: queryTaskTableList.length
       }
     }
   },
@@ -373,7 +376,8 @@ module.exports = [
     response: _ => {
       return {
         code: 20000,
-        data: querySceneTableList
+        data: querySceneTableList,
+        total: querySceneTableList.length
       }
     }
   },
@@ -383,7 +387,8 @@ module.exports = [
     response: _ => {
       return {
         code: 20000,
-        data: queryStatisticalList
+        data: queryStatisticalList,
+        total: queryStatisticalList.length
       }
     }
   },
@@ -419,6 +424,16 @@ module.exports = [
   },
   {
     url: '/vue-element-admin/drainage-test/remove',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: 'success'
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/submit',
     type: 'post',
     response: _ => {
       return {

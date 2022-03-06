@@ -5,10 +5,10 @@
       <el-col :span="span">
         <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
           <el-tab-pane label="流量报文脱敏" name="tab1">
-            <flowdesTab1 :active-name="activeName" @submitSelect="submitSelect" />
+            <flowdesTab1 :log-count-disabeled="logCountDisabeled" :active-name="activeName" @submitSelect="submitSelect" />
           </el-tab-pane>
           <el-tab-pane label="数据表脱敏" name="tab2">
-            <flowdesTab2 :active-name="activeName" @submitSelect="submitSelect" />
+            <flowdesTab2 :log-count-disabeled="logCountDisabeled" :active-name="activeName" @submitSelect="submitSelect" />
           </el-tab-pane>
         </el-tabs>
       </el-col>
@@ -19,7 +19,9 @@
           :query-log-type="queryLogType"
           :showlog-panel="showlogPanel"
           :file-name="fileName"
+          :start-click="startClick"
           @closeLogPanel="closeLogPanel"
+          @watchLogCount="watchLogCount"
         />
       </el-col>
     </el-row>
@@ -57,7 +59,9 @@ export default {
       startNowTime: null,
       span: 24,
       showlogPanel: false,
-      queryLogType: null
+      queryLogType: null,
+      logCountDisabeled: false,
+      startClick: 0
     }
   },
   methods: {
@@ -70,18 +74,28 @@ export default {
       if (val.rows) {
         if (this.activeName == 'tab1') {
           this.fileName = '脱敏处理'
+          this.startClick = val.startClick
           this.queryLogType = 4
         } else if (this.activeName == 'tab2') {
           this.fileName = '脱敏处理'
+          this.startClick = val.startClick
           this.queryLogType = 5
         } else {
           this.fileName = '流量清理'
         }
       }
     },
+    watchLogCount(val) {
+      if (val == 10) {
+        this.logCountDisabeled = false
+      } else {
+        this.logCountDisabeled = true
+      }
+    },
     closeLogPanel(val) {
       this.queryLogType = null
       this.showlogPanel = false
+      this.logCountDisabeled = false
       this.span = 24
     },
     handleClick() {

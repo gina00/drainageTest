@@ -17,6 +17,7 @@
                   style="float: right;"
                   type="primary"
                   size="small"
+                  :disabled="logCountDisabeled"
                   @click="start()"
                 >
                   基准数据同步
@@ -59,7 +60,9 @@
           :query-log-type="queryLogType"
           :showlog-panel="showlogPanel"
           :file-name="fileName"
+          :start-click="startClick"
           @closeLogPanel="closeLogPanel"
+          @watchLogCount="watchLogCount"
         />
       </el-col>
     </el-row>
@@ -124,7 +127,9 @@ export default {
       data: JSON.parse(JSON.stringify(data)),
       data2: JSON.parse(JSON.stringify(data)),
       defaultExpandedKey: null,
-      defaultExpandedKey2: null
+      defaultExpandedKey2: null,
+      logCountDisabeled: false,
+      startClick: 0
     }
   },
   mounted() {
@@ -144,15 +149,24 @@ export default {
       })
     },
     start() {
+      this.startClick = this.startClick + 1
       this.queryLogType = 6
       this.showlogPanel = true
       this.startNowTime = this.$dayjs().format('HH:mm:ss')
       this.fileName = '基准数据同步 '
       this.span = 16
     },
+    watchLogCount(val) {
+      if (val == 10) {
+        this.logCountDisabeled = false
+      } else {
+        this.logCountDisabeled = true
+      }
+    },
     closeLogPanel(val) {
       this.queryLogType = null
       this.showlogPanel = false
+      this.logCountDisabeled = false
       this.span = 24
     },
     setCheckedKey() {

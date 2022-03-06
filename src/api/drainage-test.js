@@ -163,6 +163,13 @@ export function remove(data) {
     data
   })
 }
+export function submit(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/submit',
+    method: 'post',
+    data
+  })
+}
 export function getLog(type) {
   return request({
     url: '/vue-element-admin/drainage-test/getLog',

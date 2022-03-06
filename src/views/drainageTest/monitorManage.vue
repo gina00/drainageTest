@@ -38,7 +38,7 @@
       <el-table
         v-loading="loading"
         class="commonHeight"
-        :data="tableData"
+        :data="tableData.slice((page.pageNum - 1) * page.pageSize, page.pageNum * page.pageSize)"
         border
         style="width: 100%;height:calc(100vh - 360px)"
       >
@@ -67,6 +67,18 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="paginationLayout">
+        <el-pagination
+          style="float:right;margin-top:20px"
+          :current-page="page.pageNum"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size="page.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="page.totals"
+          @size-change="handleSizeChange"
+          @current-change="handleIndexChange"
+        />
+      </div>
     </el-row>
 
     <el-dialog
@@ -160,6 +172,7 @@ export default {
       this.loading = true
       getMonitorData().then(response => {
         this.tableData = response.data
+        this.page.totals = response.total
       }).finally(() => {
         this.loading = false
       })
@@ -208,6 +221,17 @@ export default {
           }
         })
       })
+    },
+    /**
+     * 分页
+     */
+    handleIndexChange(val) {
+      this.page.pageNum = val
+      this.getData()
+    },
+    handleSizeChange(val) {
+      this.page.pageSize = val
+      this.getData()
     }
   }
 

@@ -32,7 +32,7 @@
       ref="taskTable"
       v-loading="tableLoading"
       class="commonHeight"
-      :data="taskTableData"
+      :data="taskTableData.slice((page.pageNum - 1) * page.pageSize, page.pageNum * page.pageSize)"
       size="mini"
       border
       highlight-current-row
@@ -139,6 +139,7 @@ export default {
     query() {
       queryTaskTableData().then(response => {
         this.taskTableData = response.data
+        this.page.totals = response.total
       })
     },
     resetQuery() {},

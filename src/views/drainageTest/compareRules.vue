@@ -8,7 +8,7 @@
           <el-table
             v-loading="loading1"
             class="commonHeight"
-            :data="bussinessTableData"
+            :data="bussinessTableData.slice((page1.pageNum - 1) * page1.pageSize, page1.pageNum * page1.pageSize)"
             border
             style="width: 100%;height:calc(100vh - 360px)"
           >
@@ -40,7 +40,7 @@
           <el-table
             v-loading="loading2"
             class="commonHeight"
-            :data="severTableData"
+            :data="severTableData.slice((page2.pageNum - 1) * page2.pageSize, page2.pageNum * page2.pageSize)"
             border
             style="width: 100%;height:calc(100vh - 360px)"
           >

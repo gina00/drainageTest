@@ -162,9 +162,6 @@ export default {
     justify-content: flex-end;
     width: 100%;
     background: #fff;
-    position: absolute;
-    bottom: 10px;
-    right: 20px;
   }
   .radioPanel{
     display: flex;

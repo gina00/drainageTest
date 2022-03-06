@@ -42,7 +42,7 @@
     <el-table
       v-loading="loading"
       class="commonHeight"
-      :data="tableData"
+      :data="tableData.slice((page.pageNum - 1) * page.pageSize, page.pageNum * page.pageSize)"
       border
       style="width: 100%"
     >
@@ -160,6 +160,7 @@ export default {
       this.loading = true
       drainageScene().then(response => {
         this.tableData = response.data
+        this.page.totals = response.total
       }).finally(() => {
         this.loading = false
       })

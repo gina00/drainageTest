@@ -6,6 +6,7 @@
         <el-button
           type="primary"
           size="small"
+          :disabled="btnClickDisabled"
           @click="startFlowExtract()"
         >
           开始清理
@@ -37,6 +38,13 @@ import { cleanUpTab3List } from '@/api/drainage-test'
 export default {
   components: {
   },
+  props: {
+    // eslint-disable-next-line vue/require-default-prop
+    logCountDisabeled: {
+      type: Boolean,
+      required: false
+    }
+  },
   data() {
     return {
       loading: false,
@@ -47,7 +55,18 @@ export default {
         title: '',
         data: {}
       },
-      page: { pageNum: 1, pageSize: 10, totals: 0 }
+      page: { pageNum: 1, pageSize: 10, totals: 0 },
+      btnClickDisabled: false,
+      startClick: 0
+    }
+  },
+  watch: {
+    logCountDisabeled() {
+      if (!this.logCountDisabeled) {
+        this.btnClickDisabled = false
+      } else {
+        this.btnClickDisabled = true
+      }
     }
   },
   mounted() {
@@ -77,9 +96,10 @@ export default {
       }
     },
     submitSelect(selectDataArr) {
-      this.$emit('submitSelect', { status: 'success', rows: selectDataArr })
+      this.$emit('submitSelect', { status: 'success', rows: selectDataArr, startClick: this.startClick })
     },
     startFlowExtract() {
+      this.startClick = this.startClick + 1
       this.submitSelect(this.tableData)
     },
     /**

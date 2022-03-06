@@ -35,7 +35,7 @@
     <el-table
       ref="taskTable"
       v-loading="tableLoading"
-      :data="taskTableData"
+      :data="taskTableData.slice((page.pageNum - 1) * page.pageSize, page.pageNum * page.pageSize)"
       class="commonHeight"
       size="mini"
       border
@@ -144,6 +144,7 @@ export default {
     query() {
       querySceneData().then(response => {
         this.taskTableData = response.data
+        this.page.totals = response.total
       })
     },
     resetQuery() {},

@@ -48,18 +48,16 @@
     <el-table
       ref="taskTable"
       v-loading="tableLoading"
-      :data="taskTableData"
+      :data="taskTableData.slice((page.pageNum - 1) * page.pageSize, page.pageNum * page.pageSize)"
       size="mini"
       border
       highlight-current-row
-      class="commonHeight"
-      style="width: 100%;height:calc(100vh - 660px)"
     >
       <el-table-column type="selection" width="45" />
       <el-table-column type="index" label="#" width="50" align="center" />
       <el-table-column prop="bussinessName" label="业务/服务名称" align="center">
         <template slot-scope="scope">
-          <el-button type="text" @click="showChart(scope.row.bussinessName)">{{ scope.row.bussinessName }}</el-button>
+          <el-button type="text" size="mini" @click="showChart(scope.row.bussinessName)">{{ scope.row.bussinessName }}</el-button>
         </template>
       </el-table-column>
       <el-table-column prop="interfaceId" label="接口id" align="center" min-width="120" />
@@ -99,7 +97,7 @@
       <el-pagination
         style="float:right;margin-top:20px"
         :current-page="page.pageNum"
-        :page-sizes="[10, 20, 50, 100]"
+        :page-sizes="[5, 10, 20, 50]"
         :page-size="page.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="page.totals"
@@ -135,7 +133,7 @@ export default {
       },
       taskTableData: [],
       ruleOptions: [],
-      page: { pageNum: 1, pageSize: 10, totals: 0 },
+      page: { pageNum: 1, pageSize: 5, totals: 0 },
       cardList: [],
       cardListMapObj: new Map(),
       timeId: null
@@ -176,6 +174,7 @@ export default {
     query() {
       queryStatisticalData().then(response => {
         this.taskTableData = response.data
+        this.page.totals = response.total
       })
     },
 

@@ -71,6 +71,7 @@
             <el-button
               type="primary"
               size="small"
+              :disabled="logCountDisabeled"
               @click="showDialog()"
             >
               开始测试
@@ -84,7 +85,9 @@
             :query-log-type="queryLogType"
             :showlog-panel="showlogPanel"
             :file-name="fileName"
+            :start-click="startClick"
             @closeLogPanel="closeLogPanel"
+            @watchLogCount="watchLogCount"
           />
         </el-col>
       </el-row>
@@ -128,6 +131,8 @@ export default {
       span: 24,
       showlogPanel: false,
       queryLogType: null,
+      logCountDisabeled: false,
+      startClick: 0,
       rules: {
         allFlowDate: [{ required: true, message: '请选择日期', trigger: 'blur' }],
         sceneName: [{ required: true, message: '请输入场景名称', trigger: 'blur' }]
@@ -206,17 +211,26 @@ export default {
         return
       }
       this.$emit('submitStatus', { status: 'showDialog' })
+      this.startClick = this.startClick + 1
       this.span = 12
       this.startNowTime = this.$dayjs().format('HH:mm:ss')
       this.showlogPanel = true
       this.fileName = '场景流量测试'
       this.queryLogType = 7
     },
+    watchLogCount(val) {
+      if (val == 10) {
+        this.logCountDisabeled = false
+      } else {
+        this.logCountDisabeled = true
+      }
+    },
     closeLogPanel() {
       this.$emit('submitStatus', { status: 'closeLogPanel' })
       this.startNowTime = null
       this.queryLogType = null
       this.showlogPanel = false
+      this.logCountDisabeled = false
       this.span = 24
     }
   }
@@ -229,9 +243,6 @@ export default {
     justify-content: flex-end;
     width: 100%;
     background: #fff;
-    position: absolute;
-    bottom: 10px;
-    right: 20px;
   }
   .radioPanel{
     display: flex;
