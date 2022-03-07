@@ -238,9 +238,9 @@ for (let i = 0; i < 1; i++) {
   queryLineRealTime.push(Mock.mock({
     'memory:usedperc': {
       titleText: '平均响应时间(ms)',
-      'legendData': ['10.1.12.23:4444'],
+      'legendData': ['测试服务'],
       'series': [{
-        'name': '10.1.12.23:4444',
+        'name': '测试服务',
         'type': 'line',
         'stack': '',
         'data|1-300': ['@float(1, 100, 2)']
@@ -252,9 +252,9 @@ for (let i = 0; i < 1; i++) {
     },
     'cpu': {
       titleText: '业务一致性(%)',
-      'legendData': ['10.1.12.23:4444'],
+      'legendData': ['测试服务'],
       'series': [{
-        'name': '10.1.12.23:4444',
+        'name': '测试服务',
         'type': 'line',
         'stack': '',
         'data|1-300': ['@float(1, 100, 2)']

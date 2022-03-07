@@ -19,16 +19,6 @@
         <span>{{ item.flowTaskName }}</span>
       </el-col>
     </el-row>
-    <el-pagination
-      style="float:right;margin-top:20px"
-      :current-page="page.pageNum"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="page.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="page.totals"
-      @size-change="handleSizeChange"
-      @current-change="handleIndexChange"
-    />
   </div>
 </template>
 
@@ -101,17 +91,6 @@ export default {
     startFlowExtract() {
       this.startClick = this.startClick + 1
       this.submitSelect(this.tableData)
-    },
-    /**
-     * 分页
-     */
-    handleIndexChange(val) {
-      this.page.pageNum = val
-      this.getData()
-    },
-    handleSizeChange(val) {
-      this.page.pageSize = val
-      this.getData()
     }
   }
 }
@@ -125,7 +104,6 @@ export default {
     margin-bottom: 20px;
   }
   .tab2ElRowClass{
-    height: calc(100vh - 300px);
     overflow: auto;
     border-top: 1px solid #dfe6ec;
     border-left: 1px solid #dfe6ec;

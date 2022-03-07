@@ -47,7 +47,7 @@
             <el-table-column label="序号" type="index" width="50" align="center" />
             <el-table-column prop="functionCode" label="业务功能" min-width="180" align="center">
               <template slot-scope="scope">
-                <el-button size="mini" type="text">{{ scope.row.functionCode }}</el-button>
+                <el-button size="mini" type="text" @click="showDetail(scope.row.functionCode)">{{ scope.row.functionCode }}</el-button>
               </template>
             </el-table-column>
           </el-table>
