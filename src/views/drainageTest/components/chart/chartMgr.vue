@@ -179,6 +179,10 @@ export default {
     },
 
     showChart(bussinessName) {
+      // 清除定时器
+      const _this = this
+      clearInterval(_this.timeId)
+      _this.timeId = null
       this.queryLineTime(bussinessName)
     },
     // 定时任务
