@@ -1,13 +1,13 @@
 <template>
   <div class="page">
     <el-row :gutter="20">
-      <el-col :span="12">
+      <el-col :span="24" style="margin-bottom:10px">
         <el-table
           v-loading="taskLoading"
           class="commonHeight"
           :data="taskTableData.slice((page.pageNum - 1) * page.pageSize, page.pageNum * page.pageSize)"
           border
-          style="width: 100%;height:calc(100vh - 360px)"
+          style="width: 100%;height:calc(100vh - 600px)"
         >
           <el-table-column label="序号" type="index" width="50" align="center" />
           <el-table-column prop="taskName" label="任务名称" min-width="180" align="center">
@@ -40,7 +40,7 @@
           />
         </div>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="24">
         <el-tabs v-model="tabName" type="border-card">
           <el-tab-pane label="任务配置" name="taskTab">
             <div style="padding-top: 15px">
