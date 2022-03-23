@@ -1,210 +1,254 @@
 <template>
   <div class="page">
-    <el-tabs v-model="tabName" type="border-card">
-      <el-tab-pane label="任务配置" name="taskTab">
-        <div style="padding-top: 15px">
-          <el-form
-            ref="taskForm"
-            :model="taskForm"
-            :rules="taskFormRulesList"
-            label-width="150px"
-          >
-            <el-row>
-              <el-col :span="12">
-                <el-form-item label="任务名称" prop="taskName">
-                  <el-input
-                    v-model="taskName"
-                    clearable
-                    maxlength="32"
-                    style="width: 60%"
-                    readonly="readonly"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="任务状态" prop="taskStatus">
-                  <el-radio-group
-                    v-for="item in status"
-                    :key="item.dictKey"
-                    v-model="taskForm.taskStatus"
-                  >
-                    <div style="margin-left: 5px">
-                      <el-radio :label="item.dictKey">{{ item.dictValue }}</el-radio>
-                    </div>
-                  </el-radio-group>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="12">
-                <el-form-item label="执行策略" prop="executeStrategy">
-                  <el-select v-model="taskForm.executeStrategy" @change="changeStrategyType">
-                    <el-option
-                      v-for="item in strategies"
-                      :key="item.dictKey"
-                      :label="item.dictValue"
-                      :value="item.dictKey"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col v-show="showDay" :span="12">
-                <el-form-item label="日期" prop="day">
-                  <el-select v-model="taskForm.day">
-                    <el-option
-                      v-for="item in days"
-                      :key="item.dictKey"
-                      :label="item.dictValue"
-                      :value="item.dictKey"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col v-show="showWeek" :span="12">
-                <el-form-item label="星期" prop="week">
-                  <el-select v-model="taskForm.week">
-                    <el-option
-                      v-for="item in weeks"
-                      :key="item.dictKey"
-                      :label="item.dictValue"
-                      :value="item.dictKey"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-
-              <el-col v-show="showDateTime" :span="12">
-                <el-form-item label="执行时间" prop="executeDateTime">
-                  <el-date-picker
-                    v-model="taskForm.executeDateTime"
-                    type="datetime"
-                    placeholder="选择日期时间"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    :picker-options="pickerOptionsStart"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col v-show="showTime" :span="12">
-                <el-form-item label="执行时间" prop="executeTime">
-                  <el-time-picker
-                    v-model="taskForm.executeTime"
-                    placeholder="执行时间"
-                    value-format="HH:mm:ss"
-                  />
-                </el-form-item>
-              </el-col>
-
-              <el-col v-show="showInterval" :span="12">
-                <el-form-item label="间隔时间" prop="executeInterval">
-                  <el-input
-                    v-model.number="taskForm.executeInterval"
-                    placeholder="间隔时间"
-                    style="width: 60%"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col v-if="folderForm.taskType == '1'" :span="12">
-                <el-form-item label="精准测试" prop="isCoverage">
-                  <el-switch
-                    v-model="taskForm.isCoverage"
-                    :active-value="1"
-                    :inactive-value="0"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col v-if="folderForm.taskType == '1'" :span="12">
-                <el-form-item label="安全测试" prop="isSecurity">
-                  <el-switch
-                    v-model="taskForm.isSecurity"
-                    :active-value="1"
-                    :inactive-value="0"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col v-if="folderForm.taskType == '1'" :span="12">
-                <el-form-item label="串行执行" prop="isSecurity">
-                  <el-switch
-                    v-model="taskForm.serial"
-                    :active-value="1"
-                    :inactive-value="0"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="12">
-                <el-form-item prop="executeInstructions">
-                  <span slot="label">
-                    <span class="span-box">
-                      <el-tooltip placement="top">
-                        <div slot="content">
-                          建议格式：CRM-需求-阶段-场景说明-版本号-时间
+    <el-row :gutter="20">
+      <el-col :span="12">
+        <el-table
+          v-loading="taskLoading"
+          class="commonHeight"
+          :data="taskTableData.slice((page.pageNum - 1) * page.pageSize, page.pageNum * page.pageSize)"
+          border
+          style="width: 100%;height:calc(100vh - 360px)"
+        >
+          <el-table-column label="序号" type="index" width="50" align="center" />
+          <el-table-column prop="taskName" label="任务名称" min-width="180" align="center">
+            <template slot-scope="scope">
+              <el-button type="text" @click="showDetail(scope.row.taskId,scope.row.taskName)">{{ scope.row.taskName }}</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column prop="createTime" label="创建时间" min-width="180" align="center" />
+          <el-table-column prop="taskStatus" label="状态" min-width="180" align="center">
+            <template slot-scope="scope">
+              {{ statusMap.get(scope.row.taskStatus)?statusMap.get(scope.row.taskStatus).dictValue:'' }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="executeStrategy" label="执行策略" min-width="180" align="center">
+            <template slot-scope="scope">
+              {{ strategiesMap.get(scope.row.executeStrategy)?strategiesMap.get(scope.row.executeStrategy).dictValue:'' }}
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="paginationLayout">
+          <el-pagination
+            style="float:right;margin-top:20px"
+            :current-page="page.pageNum"
+            :page-sizes="[10, 20, 50, 100]"
+            :page-size="page.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="page.totals"
+            @size-change="handleSizeChange"
+            @current-change="handleIndexChange"
+          />
+        </div>
+      </el-col>
+      <el-col :span="12">
+        <el-tabs v-model="tabName" type="border-card">
+          <el-tab-pane label="任务配置" name="taskTab">
+            <div style="padding-top: 15px">
+              <el-form
+                ref="taskForm"
+                :model="taskForm"
+                :rules="taskFormRulesList"
+                label-width="150px"
+              >
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="任务名称" prop="taskName">
+                      <el-input
+                        v-model="taskForm.taskName"
+                        clearable
+                        maxlength="32"
+                        style="width: 60%"
+                        readonly="readonly"
+                      />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="任务状态" prop="taskStatus">
+                      <el-radio-group
+                        v-for="item in status"
+                        :key="item.dictKey"
+                        v-model="taskForm.taskStatus"
+                      >
+                        <div style="margin-left: 5px">
+                          <el-radio :label="item.dictKey">{{ item.dictValue }}</el-radio>
                         </div>
-                        <i class="el-icon-question" />
-                      </el-tooltip>
+                      </el-radio-group>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="执行策略" prop="executeStrategy">
+                      <el-select v-model="taskForm.executeStrategy" @change="changeStrategyType">
+                        <el-option
+                          v-for="item in strategies"
+                          :key="item.dictKey"
+                          :label="item.dictValue"
+                          :value="item.dictKey"
+                        />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col v-show="showDay" :span="12">
+                    <el-form-item label="日期" prop="day">
+                      <el-select v-model="taskForm.day">
+                        <el-option
+                          v-for="item in days"
+                          :key="item.dictKey"
+                          :label="item.dictValue"
+                          :value="item.dictKey"
+                        />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col v-show="showWeek" :span="12">
+                    <el-form-item label="星期" prop="week">
+                      <el-select v-model="taskForm.week">
+                        <el-option
+                          v-for="item in weeks"
+                          :key="item.dictKey"
+                          :label="item.dictValue"
+                          :value="item.dictKey"
+                        />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
 
-                      <span> 执行说明 </span>
-                    </span>
-                  </span>
-                  <el-input
-                    v-model.number="taskForm.executeInstructions"
-                    maxlength="32"
-                    style="width: 60%"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-          <div slot="footer" class="dialog-footer" style="float: right; padding-top: 10px">
-            <el-button
-              icon="el-icon-video-play"
-              type="text"
-              @click="executeRightNow"
-            >立即执行</el-button>
-            <el-button
-              v-if="folderForm.taskType == '1'"
-              style="margin-right: 10px"
-              type="text"
-              icon="el-icon-zoom-in"
-              @click="viewReport"
-            >
-              查看执行报告
-            </el-button>
-            <el-button
-              v-if="folderForm.taskType == '2'"
-              style="margin-right: 10px"
-              type="text"
-              icon="el-icon-zoom-in"
-              @click="viewPerformanceReport"
-            >
-              查看性能报告
-            </el-button>
-            <el-button
-              type="primary"
-              :loading="saveTaskLoading"
-              @click="saveTaskInfo('taskForm')"
-            >
-              保存</el-button>
-          </div>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="场景配置" name="taskScene">
-        <div>
-          <taskSceneObject :task-info="taskInfo" :project-id="projectId" />
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="邮件配置" name="taskEmail">
-        <div>
-          <taskEmailObject :task-id="taskId" />
-        </div>
-      </el-tab-pane>
-    </el-tabs>
+                  <el-col v-show="showDateTime" :span="12">
+                    <el-form-item label="执行时间" prop="executeDateTime">
+                      <el-date-picker
+                        v-model="taskForm.executeDateTime"
+                        type="datetime"
+                        placeholder="选择日期时间"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        :picker-options="pickerOptionsStart"
+                      />
+                    </el-form-item>
+                  </el-col>
+                  <el-col v-show="showTime" :span="12">
+                    <el-form-item label="执行时间" prop="executeTime">
+                      <el-time-picker
+                        v-model="taskForm.executeTime"
+                        placeholder="执行时间"
+                        value-format="HH:mm:ss"
+                      />
+                    </el-form-item>
+                  </el-col>
+
+                  <el-col v-show="showInterval" :span="12">
+                    <el-form-item label="间隔时间" prop="executeInterval">
+                      <el-input
+                        v-model.number="taskForm.executeInterval"
+                        placeholder="间隔时间"
+                        style="width: 60%"
+                      />
+                    </el-form-item>
+                  </el-col>
+                  <el-col v-if="folderForm.taskType == '1'" :span="12">
+                    <el-form-item label="精准测试" prop="isCoverage">
+                      <el-switch
+                        v-model="taskForm.isCoverage"
+                        :active-value="1"
+                        :inactive-value="0"
+                      />
+                    </el-form-item>
+                  </el-col>
+                  <el-col v-if="folderForm.taskType == '1'" :span="12">
+                    <el-form-item label="安全测试" prop="isSecurity">
+                      <el-switch
+                        v-model="taskForm.isSecurity"
+                        :active-value="1"
+                        :inactive-value="0"
+                      />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col v-if="folderForm.taskType == '1'" :span="12">
+                    <el-form-item label="串行执行" prop="isSecurity">
+                      <el-switch
+                        v-model="taskForm.serial"
+                        :active-value="1"
+                        :inactive-value="0"
+                      />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item prop="executeInstructions">
+                      <span slot="label">
+                        <span class="span-box">
+                          <el-tooltip placement="top">
+                            <div slot="content">
+                              建议格式：CRM-需求-阶段-场景说明-版本号-时间
+                            </div>
+                            <i class="el-icon-question" />
+                          </el-tooltip>
+
+                          <span> 执行说明 </span>
+                        </span>
+                      </span>
+                      <el-input
+                        v-model.number="taskForm.executeInstructions"
+                        maxlength="32"
+                        style="width: 60%"
+                      />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+              <div slot="footer" class="dialog-footer" style="float: right; padding-top: 10px">
+                <el-button
+                  icon="el-icon-video-play"
+                  type="text"
+                  @click="executeRightNow"
+                >立即执行</el-button>
+                <el-button
+                  v-if="folderForm.taskType == '1'"
+                  style="margin-right: 10px"
+                  type="text"
+                  icon="el-icon-zoom-in"
+                  @click="viewReport"
+                >
+                  查看执行报告
+                </el-button>
+                <el-button
+                  v-if="folderForm.taskType == '2'"
+                  style="margin-right: 10px"
+                  type="text"
+                  icon="el-icon-zoom-in"
+                  @click="viewPerformanceReport"
+                >
+                  查看性能报告
+                </el-button>
+                <el-button
+                  type="primary"
+                  :loading="saveTaskLoading"
+                  @click="saveTaskInfo('taskForm')"
+                >
+                  保存</el-button>
+              </div>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="场景配置" name="taskScene">
+            <div>
+              <taskSceneObject :task-info="taskInfo" :project-id="projectId" />
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="邮件配置" name="taskEmail">
+            <div>
+              <taskEmailObject :task-id="taskId" />
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+      </el-col>
+    </el-row>
+
   </div>
 </template>
 <script>
-import { dict, update } from '@/api/drainage-test'
+import { dict, update, queryTaskManageTableData } from '@/api/drainage-test'
 // import TaskDevice from '@/views/autotest/businessconfig/task/TaskDevice.vue'
 import TaskEmail from '@/views/drainageTest/components/task/TaskEmail.vue'
 import TaskScene from '@/views/drainageTest/components/task/TaskScene.vue'
@@ -216,6 +260,9 @@ export default {
   },
   data() {
     return {
+      taskLoading: false,
+      taskTableData: [],
+      page: { pageNum: 1, pageSize: 10, totals: 0 },
       asideCollapse: false,
       taskId: '',
       filterText: '',
@@ -407,6 +454,20 @@ export default {
       } else if (type == 'now') {
         return this.taskFormRules
       }
+    },
+    strategiesMap: function() {
+      const objMap = new Map()
+      this.strategies.forEach(element => {
+        objMap.set(element.dictKey, element)
+      })
+      return objMap
+    },
+    statusMap: function() {
+      const objMap = new Map()
+      this.status.forEach(element => {
+        objMap.set(element.dictKey, element)
+      })
+      return objMap
     }
     // ...mapState(['userInfo', 'permission'])
   },
@@ -419,11 +480,13 @@ export default {
     this.getDictData()
     // this.queryStrategy()
     this.getInitData()
+    this.getData()
   },
   methods: {
     getDictData() {
       dict().then(response => {
         this.strategies = response.data[4]
+        this.executeStrategy = response.data[5]
         this.taskForm.executeStrategy = this.strategies[0].dictKey
       })
     },
@@ -498,6 +561,30 @@ export default {
         })
       }).finally(() => {
       })
+    },
+    /**
+     * 分页
+     */
+    handleIndexChange(val) {
+      this.page.pageNum = val
+      this.getData()
+    },
+    handleSizeChange(val) {
+      this.page.pageSize = val
+      this.getData()
+    },
+    getData() {
+      queryTaskManageTableData().then(resp => {
+        this.taskTableData = resp.data
+        this.page.totals = resp.total
+      })
+    },
+    showDetail(taskId, taskName) {
+      this.taskForm = this.taskTableData[0].taskForm
+      this.taskForm.taskName = taskName
+      this.taskId = taskId
+      this.$set(this.taskInfo, 'taskId', taskId)
+      this.$set(this.taskInfo, 'taskName', taskName)
     }
     // viewReport() {
     //   const type = 'report'

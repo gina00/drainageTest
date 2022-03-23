@@ -126,6 +126,21 @@ export function querySceneData(data) {
     data
   })
 }
+// 任务配置页面表格数据
+export function queryTaskManageTableData(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/queryTaskManageTableData',
+    method: 'post',
+    data
+  })
+}
+export function getEmailConfigByTaskId(data) {
+  return request({
+    url: '/vue-element-admin/drainage-test/getEmailConfigByTaskId',
+    method: 'post',
+    data
+  })
+}
 // 请求曲线页面列表接口
 export function queryStatisticalData(data) {
   return request({

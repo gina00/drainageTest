@@ -7,7 +7,7 @@
             ref="taskEmailForm"
             :model="taskEmailForm"
             :rules="taskEmailFormRules"
-            label-width="150px"
+            label-width="100px"
           >
             <el-row>
               <el-col :span="24">
@@ -123,7 +123,7 @@
 </template>
 <script>
 // import { mapState } from 'vuex'
-import { update } from '@/api/drainage-test'
+import { update, getEmailConfigByTaskId } from '@/api/drainage-test'
 export default {
   props: {
     // eslint-disable-next-line vue/require-default-prop
@@ -165,7 +165,7 @@ export default {
         if (newVal != null && newVal != '') {
           this.currentTaskId = newVal
           this.taskEmailForm = {}
-          this.getEmailConfig()
+          this.getData()
         }
       }
     }
@@ -304,6 +304,11 @@ export default {
         _ownObj.$set(_ownObj.taskEmailForm, 'ccTo', emailStr)
       }
       _ownObj.dialogVisible = false
+    },
+    getData() {
+      getEmailConfigByTaskId().then(resp => {
+        this.taskEmailForm = resp.data[0]
+      })
     },
     getEmailConfig() {
       var _ownObj = this

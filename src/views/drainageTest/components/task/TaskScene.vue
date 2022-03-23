@@ -123,7 +123,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <div class="paginationLayout">
+          <!-- <div class="paginationLayout">
             <span class="demonstration" />
             <el-pagination
               :current-page="pageIndex"
@@ -134,7 +134,7 @@
               @size-change="dealPageSizeChange"
               @current-change="dealPageIndexChange"
             />
-          </div>
+          </div> -->
         </div>
       </el-main>
       <el-dialog
@@ -307,7 +307,8 @@ export default {
           if (newVal.taskId != null && newVal.taskId != '') {
             this.currentTaskId = newVal.taskId
             this.clearForm()
-            this.pageQueryScene(null)
+            // this.pageQueryScene(null)
+            this.querySelectedScene(null)
           }
         }
       }
@@ -321,7 +322,9 @@ export default {
   methods: {
     querySelectedScene() {
       querySelectedScene().then(response => {
-        this.sceneData = response.data
+        var data = response.data
+        var newArr = data.filter(item => item.parentTaskName === this.taskInfo.taskName)
+        this.sceneData = JSON.parse(JSON.stringify(newArr))
         this.sceneData.map((item, index) => {
           const selectedArr = []
           const arr = []

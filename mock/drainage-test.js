@@ -15,6 +15,8 @@ const queryTaskTableList = []
 const querySceneTableList = []
 const queryStatisticalList = []
 const queryLineRealTime = []
+const queryTaskManageTableData = []
+const emailConfigByTaskId = []
 const list = []
 const count = 0
 
@@ -85,7 +87,7 @@ for (let i = 0; i < 50; i++) {
     id: '@increment',
     functionCode: 902055220 + i,
     compareAndFunctionCodeList: compareAndFunctionCodeList,
-    updateTime: '@date()',
+    updateTime: '2021-' + "@date('MM-dd')",
     children: childNodeList
   }))
 }
@@ -114,36 +116,106 @@ for (let i = 0; i < 15; i++) {
     responseMessage: '<?xml version=\"1.0\" encoding=\"GBK\"?> \r\n<operation_in type=\"struct\">\r\n  <service_name type=\"string\">ac_query_invoice</service_name>\r\n  <sysfunc_id type=\"int\">91001001</sysfunc_id>\r\n  <request_type type=\"int\">2001</request_type>\r\n  <verify_code type=\"string\">789730661774598915448481</verify_code>\r\n  <operator_id type=\"string\">9999999</operator_id>\r\n  <request_time type=\"datetime\">20050101223344</request_time>\r\n  <request_seq type=\"long\">100000000000</request_seq>\r\n  <request_source type=\"int\">101213</request_source>\r\n  <request_target type=\"int\">101101</request_target>\r\n  <msg_version type=\"string\">0100</msg_version>\r\n  <cont_version type=\"string\">0100</cont_version>\r\n  <content type=\"string\"><![CDATA[<?xml version=\"1.0\" encoding=\"GBK\"?>\r\n        <request type=\"struct\">\r\n <home_city type=\"int\">$:1</home_city>\r\n    <start_month type=\"int\">$:2</start_month>\r\n            <end_month type=\"int\">$:3</end_month>\r\n            <msisdn type=\"string\">$:4</msisdn>\r\n        </request>]]></content>\r\n</operation_in>'
   }))
 }
+// 任务配置列表
+for (let i = 0; i < 3; i++) {
+  iterations.push(Mock.mock({
+    iterationId: 1000000 + i,
+    iterationName: '基础迭代' + i,
+    updateTime: '2021-' + "@datetime('MM-dd')"
+  }))
+}
+// for (let i = 0; i < 10; i++) {
+//   selectedSceneList.push(Mock.mock({
+//     sceneId: 1000000 + i,
+//     sceneName: '测试场景' + i,
+//     updateTime: '2021-' + "@datetime('MM-dd')",
+//     iterations: iterations
+//   }))
+// }
+for (let i = 0; i < 20; i++) {
+  selectedSceneList.push(Mock.mock({
+    'id|+1': 1,
+    parentTaskName: '任务名称' + i,
+    'sceneId': '@increment(10)',
+    'sceneName': '测试场景' + i,
+    updateTime: '2021-' + "@datetime('MM-dd')",
+    endTime: '2021-' + "@datetime('MM-dd')",
+    iterations: iterations
+  }))
+}
+for (let i = 0; i < 20; i++) {
+  queryTaskManageTableData.push(Mock.mock({
+    taskId: '@increment(10)' + '1',
+    taskName: '任务名称' + i,
+    createTime: '2021-' + "@datetime('MM-dd')",
+    taskStatus: 1,
+    executeStrategy: 'time',
+    'taskForm': {
+      taskName: '任务名称' + i,
+      taskStatus: 1,
+      executeStrategy: 'time',
+      day: 2,
+      executeDateTime: '2021-' + "@datetime('MM-dd HH:mm:ss')",
+      executeTime: "@datetime('HH:mm:ss')",
+      executeInterval: 50,
+      executeInstructions: '执行说明内容',
+      isCoverage: 1,
+      isSecurity: 1,
+      serial: 0
+    },
+    selectedSceneList: selectedSceneList
+  }))
+}
+
+for (let i = 0; i < 10; i++) {
+  emailConfigByTaskId.push(Mock.mock({
+    'appId': '@increment(10)',
+    ccTo: 'zhangfenfang@fmcc.boss; linxiaodong@fmcc.boss; yeairi@fmcc.boss; lilijun@fmcc.boss; limingqi@fmcc.boss; wangxinlei1@fmcc.boss; xuxiaoke@fmcc.boss; wuminjin@fmcc.boss; linxinyue@fmcc.boss; yangy@fmcc.boss; yaowangzhi@fmcc.boss; tangyutao@fmcc.boss; chentaob@fmcc.boss; xzq@fmcc.boss; wuwenda@fmcc.boss; linjia@fmcc.boss; linyong@fmcc.boss; wangyan@fmcc.boss; ruanchuiqin@fmcc.boss;',
+    createDate: 1599785017000,
+    createUser: '5e8dd7582b214b8e8f3b84f3e77c2e43',
+    id: 'fbba4997ecb64a248b501ec480b16223',
+    objStatus: 0,
+    sendTo: 'cxh@fmcc.boss; chenqiang@fmcc.boss; dyq@fmcc.boss; hyl@fmcc.boss;',
+    taskId: '9d16013512f0478cac45b93b63eac365',
+    templateCode: '11014',
+    updateDate: 1633998743000,
+    updateUser: '5e8dd7582b214b8e8f3b84f3e77c2e43'
+    // 'taskId|+1': 1000000,
+    // taskName: '任务名称' + i,
+    // createTime: '2021-' + "@datetime('MM-dd')",
+    // taskStatus: 1,
+    // executeStrategy: 'time',
+    // 'taskForm': {
+    //   taskName: '任务名称' + i,
+    //   taskStatus: 1,
+    //   executeStrategy: 'time',
+    //   day: 2,
+    //   executeDateTime: '2021-' + "@datetime('MM-dd HH:mm:ss')",
+    //   executeTime: "@datetime('HH:mm:ss')",
+    //   executeInterval: 50,
+    //   isCoverage: 1,
+    //   isSecurity: 1,
+    //   serial: 0
+    // },
+    // taskInfo: {}
+  }))
+}
 for (let i = 0; i < 50; i++) {
   drainageSceneList.push(Mock.mock({
     sceneCode: 1000000 + i,
     sceneName: '测试场景' + i,
     sceneIntroduction: '测试场景' + i,
-    updateTime: '@date()'
+    updateTime: '2021-' + "@datetime('MM-dd')"
   }))
 }
-for (let i = 0; i < 3; i++) {
-  iterations.push(Mock.mock({
-    iterationId: 1000000 + i,
-    iterationName: '基础迭代' + i,
-    updateTime: '@date()'
-  }))
-}
-for (let i = 0; i < 10; i++) {
-  selectedSceneList.push(Mock.mock({
-    sceneId: 1000000 + i,
-    sceneName: '测试场景' + i,
-    updateTime: '@date()',
-    iterations: iterations
-  }))
-}
+
 for (let i = 0; i < 50; i++) {
   list.push(Mock.mock({
     'id|+1': 1,
     parentTaskName: '引流测试任务' + i,
     'sceneName': '引流测试场景' + (i++),
-    startTime: '@date()',
-    endTime: '@date()',
+    startTime: '2021-' + "@datetime('MM-dd')",
+    endTime: '2021-' + "@datetime('MM-dd')",
     'execStatusValue|0-1': 0,
     statusDesc: '引流测试场景' + i + 1,
     'stopCount|0-1': 1
@@ -153,8 +225,8 @@ for (let i = 0; i < 50; i++) {
   queryTaskTableList.push(Mock.mock({
     sceneId: 1000000 + i,
     taskName: '引流测试任务' + i,
-    startTime: '@date()',
-    endTime: '@date()',
+    startTime: '2021-' + "@datetime('MM-dd')",
+    endTime: '2021-' + "@datetime('MM-dd')",
     'totalCount|1-100': 100,
     successCount: '@increment',
     failedCount: '@increment(1)',
@@ -168,18 +240,18 @@ for (let i = 0; i < 50; i++) {
       'id|+1': 1,
       parentTaskName: '引流测试任务' + i,
       'sceneName': '引流测试场景' + count + 1,
-      startTime: '@date()',
-      endTime: '@date()',
+      startTime: '2021-' + "@date('MM-dd')",
+      endTime: '2021-' + "@date('MM-dd')",
       'execStatusValue|1': '@boolean',
       statusDesc: '引流测试场景描述' + count + 1,
       'stopCount|0-1': 1,
       'detail': {
         functionCode: 92002040 + i,
         serverType: '@integer(1, 2)',
-        reqTime: '@datetime()',
-        respTime: '@datetime()',
+        reqTime: '2021-' + "@datetime('MM-dd HH:mm:ss')",
+        respTime: '2021-' + "@datetime('MM-dd HH:mm:ss')",
         'times|500-6000': 1,
-        downloadDate: '@date()',
+        downloadDate: '2021-' + "@date('MM-dd')",
         prodUrl: 'http://10.46.238.142:8089/fcgi-bin/BSSP_SFC',
         realUrl: 'http://10.46.238.142:8089/fcgi-bin/BSSP_SFC',
         reqMessage: '<?xml version=\"1.0\" encoding=\"GBK\"?><operation_in type=\"struct\"><organ_id type=\"int\"/><sysfunc_id type=\"int\">92002040</sysfunc_id><request_source type=\"int\">101219</request_source><operator_id type=\"string\">9998901</operator_id><request_target type=\"int\">101101</request_target><request_time type=\"datetime\">20211030144759</request_time><verify_code type=\"string\">101219200608310000000001</verify_code><service_name type=\"string\">BM_QueryUserStatus</service_name><content type=\"string\"><request type=\"struct\"><home_city type=\"int\">591</home_city><msisdn type=\"int\"></msisdn><user_id type=\"string\">591500028609324</user_id><obj_type type=\"int\">1</obj_type></request></content><cont_version type=\"string\">0100</cont_version><msg_version type=\"string\">0100</msg_version><request_type type=\"int\">1002</request_type><request_seq type=\"long\">1335941279540</request_seq></operation_in>',
@@ -195,8 +267,8 @@ for (let i = 0; i < 50; i++) {
     'id|+1': 1,
     sceneId: 1000000 + i,
     'sceneName': '引流测试场景' + i,
-    startTime: '@date()',
-    endTime: '@date()',
+    startTime: '2021-' + "@date('MM-dd')",
+    endTime: '2021-' + "@date('MM-dd')",
     'execStatusValue|1': '@boolean',
     statusDesc: '引流测试场景描述' + i,
     'stopCount|0-1': 1,
@@ -204,10 +276,10 @@ for (let i = 0; i < 50; i++) {
       parentSceneName: '引流测试场景' + i,
       functionCode: 92002040 + i,
       serverType: '@integer(1, 2)',
-      reqTime: '@datetime()',
-      respTime: '@datetime()',
+      reqTime: '2021-' + "@datetime('MM-dd HH:mm:ss')",
+      respTime: '2021-' + "@datetime('MM-dd HH:mm:ss')",
       'times|500-6000': 1,
-      downloadDate: '@date()',
+      downloadDate: '2021-' + "@date('MM-dd')",
       prodUrl: 'http://10.46.238.142:8089/fcgi-bin/BSSP_SFC',
       realUrl: 'http://10.46.238.142:8089/fcgi-bin/BSSP_SFC',
       reqMessage: '<?xml version=\"1.0\" encoding=\"GBK\"?><operation_in type=\"struct\"><organ_id type=\"int\"/><sysfunc_id type=\"int\">92002040</sysfunc_id><request_source type=\"int\">101219</request_source><operator_id type=\"string\">9998901</operator_id><request_target type=\"int\">101101</request_target><request_time type=\"datetime\">20211030144759</request_time><verify_code type=\"string\">101219200608310000000001</verify_code><service_name type=\"string\">BM_QueryUserStatus</service_name><content type=\"string\"><request type=\"struct\"><home_city type=\"int\">591</home_city><msisdn type=\"int\"></msisdn><user_id type=\"string\">591500028609324</user_id><obj_type type=\"int\">1</obj_type></request></content><cont_version type=\"string\">0100</cont_version><msg_version type=\"string\">0100</msg_version><request_type type=\"int\">1002</request_type><request_seq type=\"long\">1335941279540</request_seq></operation_in>',
@@ -399,6 +471,28 @@ module.exports = [
       return {
         code: 20000,
         data: queryLineRealTime[0]
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/queryTaskManageTableData',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: queryTaskManageTableData,
+        total: queryTaskManageTableData.length
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/drainage-test/getEmailConfigByTaskId',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: emailConfigByTaskId,
+        total: emailConfigByTaskId.length
       }
     }
   },
