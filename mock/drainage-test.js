@@ -591,6 +591,20 @@ module.exports = [
           'logInformation': '流量测试进行中.......',
           'fileCount|1-100': 1
         })
+      } else if (type == 8) {
+        // 场景流量测试
+        data = Mock.mock({
+          'time|+30': '@now(HH:mm:ss)',
+          'logInformation': '数据表流量复制进行中.......',
+          'fileCount|1-100': 1
+        })
+      } else if (type == 9) {
+        // 场景流量测试
+        data = Mock.mock({
+          'time|+30': '@now(HH:mm:ss)',
+          'logInformation': '流量报文复制进行中.......',
+          'fileCount|1-100': 1
+        })
       }
       return {
         code: 20000,

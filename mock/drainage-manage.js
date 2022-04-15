@@ -29,7 +29,8 @@ for (let i = 0; i < flowExtractionListCount; i++) {
 }
 for (let i = 0; i < cleanUpTab2ListCount; i++) {
   cleanUpTab2List.push(Mock.mock({
-    flowTaskName: 1000000 + i
+    flowTaskName: 1000000 + i,
+    checked: false
   }))
 }
 for (let i = 0; i < cleanUpTab2ListCount; i++) {

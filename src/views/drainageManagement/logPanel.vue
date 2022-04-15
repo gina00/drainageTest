@@ -99,6 +99,12 @@ export default {
         } else if (this.queryLogType == 7) {
           this.logList.push('本次流量测试执行完成 。')
           this.clearQueryLog()
+        } else if (this.queryLogType == 8) {
+          this.logList.push('本次数据表流量复制执行完成 。')
+          this.clearQueryLog()
+        } else if (this.queryLogType == 9) {
+          this.logList.push('本次流量报文复制执行完成 。')
+          this.clearQueryLog()
         }
       }
     }

@@ -82,6 +82,33 @@ export const constantRoutes = [
         meta: {
           title: '流量筛选'
         }
+      },
+      {
+        path: '/trafficCopy',
+        component: () => import('@/views/drainageManagement/trafficCopy'),
+        name: 'trafficCopy',
+        redirect: '/drainageManagement',
+        meta: {
+          title: '流量复制'
+        }, children: [
+          {
+            path: 'dataTableTrafficFilter',
+            component: () => import('@/views/drainageManagement/dataTableTrafficFilter'),
+            name: 'dataTableTrafficFilter',
+            threeMenu: true,
+            meta: {
+              title: '数据表流量复制'
+            }
+          },
+          {
+            path: 'trafficReqCopy',
+            component: () => import('@/views/drainageManagement/trafficReqCopy'),
+            name: 'trafficReqCopy',
+            threeMenu: true,
+            meta: {
+              title: '流量报文复制'
+            }
+          }]
       }
     ]
   },

@@ -158,6 +158,14 @@ module.exports = [
           6: [
             { label: '业务', value: 1 },
             { label: '服务', value: 2 }
+          ],
+          7: [
+            { label: 'CCS', value: 'CCS' },
+            { label: 'NOTIFY', value: 'NOTIFY' },
+            { label: 'PMS1', value: 'PMS1' },
+            { label: 'CCS1', value: 'CCS1' },
+            { label: 'MANAFE', value: 'MANAFE' },
+            { label: 'NOTIFY1', value: 'NOTIFY1' }
           ]
         }
       }
