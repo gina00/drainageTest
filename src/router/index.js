@@ -174,6 +174,27 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/operationMgr',
+    component: Layout,
+    redirect: '/operationMgr',
+    alwaysShow: false, // will always show the root menu
+    name: 'operationMgr',
+    meta: {
+      title: '操作手册',
+      icon: 'excel'
+    },
+    children: [
+      {
+        path: 'operationMgr',
+        component: () => import('@/views/assetManage/operationMgr/index'),
+        name: 'operationMgr',
+        meta: {
+          title: '操作手册管理'
+        }
+      }
+    ]
+  },
+  {
     path: '/redirect',
     component: Layout,
     hidden: true,

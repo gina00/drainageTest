@@ -8,6 +8,7 @@ const search = require('./remote-search')
 const drainageManage = require('./drainage-manage')
 const drainageTest = require('./drainage-test')
 const drainageDict = require('./drainage-dict')
+const g6 = require('./g6')
 
 const mocks = [
   ...user,
@@ -16,7 +17,8 @@ const mocks = [
   ...search,
   ...drainageManage,
   ...drainageTest,
-  ...drainageDict
+  ...drainageDict,
+  ...g6
 ]
 
 // for front mock
