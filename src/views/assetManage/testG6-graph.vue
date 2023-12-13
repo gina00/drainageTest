@@ -13,7 +13,7 @@
         @change="searchNodeFun"
       >
         <el-option
-          v-for="node in searchNodeList"
+          v-for="node in searchNodeList.nodes"
           :key="node.id"
           :label="node.name"
           :value="node.id"
@@ -21,11 +21,11 @@
       </el-select>
       <el-button-group
         style="
-            vertical-align: bottom;
-            background-color: #409eff;
-            overflow: hidden;
-            border-radius: 3px;
-          "
+          vertical-align: bottom;
+          background-color: #409eff;
+          overflow: hidden;
+          border-radius: 3px;
+        "
       >
         <el-tooltip effect="dark" content="定位" placement="top">
           <el-button
@@ -33,7 +33,7 @@
             icon="el-icon-search"
             size="mini"
             style="border-radius: 3px"
-            @click.stop="isShowSelect = !isShowSelect"
+            @click.stop="isShowSelect=!isShowSelect"
           />
         </el-tooltip>
         <el-tooltip effect="dark" content="放大" placement="top">
@@ -41,7 +41,7 @@
             type="primary"
             icon="el-icon-zoom-in"
             size="mini"
-            @click="clickToolbar('zoomOut', localGraph)"
+            @click="clickToolbar('zoomOut',localGraph)"
           />
         </el-tooltip>
         <el-tooltip effect="dark" content="缩小" placement="top">
@@ -49,7 +49,7 @@
             type="primary"
             icon="el-icon-zoom-out"
             size="mini"
-            @click="clickToolbar('zoomIn', localGraph)"
+            @click="clickToolbar('zoomIn',localGraph)"
           />
         </el-tooltip>
         <el-tooltip effect="dark" content="全屏" placement="top">
@@ -57,17 +57,17 @@
             type="primary"
             icon="el-icon-full-screen"
             size="mini"
-            @click="clickToolbar('autoZoom', localGraph)"
+            @click="clickToolbar('autoZoom',localGraph)"
           />
         </el-tooltip>
         <!-- <el-tooltip effect="dark" content="信息面板" placement="top">
-            <el-button
-              type="primary"
-              size="mini"
-              icon="icon-A10478_Switch"
-              :style="{ float: 'right' }"
-            />
-          </el-tooltip> -->
+          <el-button
+            type="primary"
+            size="mini"
+            icon="icon-A10478_Switch"
+            :style="{ float: 'right' }"
+          />
+        </el-tooltip> -->
       </el-button-group>
     </div>
 
@@ -77,14 +77,14 @@
 <script>
 import G6 from '@antv/g6'
 import insertCss from 'insert-css'
-import { treeDataList } from '@/api/g6.js'
+import { assetDataList } from '@/api/g6.js'
 insertCss(`
-    .g6-component-tooltip {
-      background-color: rgba(255, 255, 255, 0.8);
-      padding: 0px 10px 24px 10px;
-      box-shadow: rgb(174, 174, 174) 0px 0px 10px;
-    }
-  `)
+  .g6-component-tooltip {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 0px 10px 24px 10px;
+    box-shadow: rgb(174, 174, 174) 0px 0px 10px;
+  }
+`)
 let graph = {}
 export default {
   data() {
@@ -102,52 +102,15 @@ export default {
     this.getData()
   },
   methods: {
-    initG6() {
-      const data = {
-        // 点集
-        nodes: [
-          {
-            id: 'node1', // String，该节点存在则必须，节点的唯一标识
-            x: 100, // Number，可选，节点位置的 x 值
-            y: 200 // Number，可选，节点位置的 y 值
-          },
-          {
-            id: 'node2', // String，该节点存在则必须，节点的唯一标识
-            x: 300, // Number，可选，节点位置的 x 值
-            y: 200 // Number，可选，节点位置的 y 值
-          }
-        ],
-        // 边集
-        edges: [
-          {
-            source: 'node1', // String，必须，起始点 id
-            target: 'node2' // String，必须，目标点 id
-          }
-        ]
-      }
-      const graph = new G6.Graph({
-        container: 'mountNode', // String | HTMLElement，必须，在 Step 1 中创建的容器 id 或容器本身
-        width: 800, // Number，必须，图的宽度
-        height: 500 // Number，必须，图的高度
-      })
-      graph.data(data) // 读取 Step 2 中的数据源到图上
-      graph.render()
-    },
     getData() {
-      treeDataList()
-        .then(response => {
+      assetDataList()
+        .then((response) => {
           this.dataList = response.data
           this.initregistG6()
-          graph.getNodes().forEach(node => {
-            const obj = {
-              id: node._cfg.model.id,
-              name: node._cfg.model.name
-            }
-            this.searchNodeList.push(obj)
-          })
-          // this.searchNodeList=this.treeToList(JSON.parse(JSON.stringify(this.dataList)))
+          this.searchNodeList = JSON.parse(JSON.stringify(this.dataList))
         })
         .finally(() => {
+          // this.clickToolbar('autoZoom',localGraph)
           // this.loading = false
         })
     },
@@ -188,14 +151,14 @@ export default {
       })
       return res
     },
-    fittingColor(nodeType) {
-      if (nodeType == 1) {
+    fittingColor(level) {
+      if (level == 1) {
         return '#00aaff'
-      } else if (nodeType == 2) {
+      } else if (level == 2) {
         return '#5F95FF'
-      } else if (nodeType == 3) {
+      } else if (level == 3) {
         return '#61DDAA'
-      } else if (nodeType == 4) {
+      } else if (level == 4) {
         return '#65789B'
       } else {
         return '#78D3F8'
@@ -206,29 +169,21 @@ export default {
       if (this.lastSelectedNode) {
         graph.setItemState(this.lastSelectedNode, 'active', false)
         const edges = this.lastSelectedNode.getEdges()
-        edges.forEach(edge => graph.setItemState(edge, 'running', false))
+        edges.forEach((edge) => graph.setItemState(edge, 'running', false))
         this.lastSelectedNode = null
       }
       if (id) {
         const subData = graph.findById(id)
-        if (!subData) {
-          const currentNode = this.searchNodeList.filter(item => item.id == id)
-          if (currentNode?.length != 0) {
-            const item = graph.findById(currentNode[0].parentId)
-            graph.setItemState(item, 'collapsed', !item.getModel().collapsed)
-          }
-        } else {
-          this.lastSelectedNode = subData
-          window.console.log(subData)
-          graph.focusItem(subData, true, {
-            easing: 'easeCubic',
-            duration: 500
-          })
-          graph.setItemState(subData, 'active', true)
-          const edges = subData.getEdges()
-          edges.forEach(edge => graph.setItemState(edge, 'running', true))
-          graph.translate(0, -50)
-        }
+        this.lastSelectedNode = subData
+        window.console.log(subData)
+        graph.focusItem(subData, true, {
+          easing: 'easeCubic',
+          duration: 500
+        })
+        graph.setItemState(subData, 'active', true)
+        const edges = subData.getEdges()
+        edges.forEach((edge) => graph.setItemState(edge, 'running', true))
+        graph.translate(0, -50)
       } else {
         this.clickToolbar('autoZoom', this.localGraph)
       }
@@ -275,22 +230,24 @@ export default {
         itemTypes: ['node', 'edge'],
         // custom the tooltip's content
         // 自定义 tooltip 内容
-        getContent: e => {
+        getContent: (e) => {
           const outDiv = document.createElement('div')
           outDiv.style.width = 'fit-content'
           // outDiv.style.padding = '0px 0px 20px 0px';
           outDiv.innerHTML = `
-              <h4>节点详情</h4>
-              <ul>
-                <li>节点名称: ${e.item.getModel().label || e.item.getModel().id}</li>
-              </ul>
-              <ul>
-                <li>页面来源: ${e.item.getModel().source}</li>
-              </ul>
-              <ul>
-                <li>节点类型: ${e.item.getType()}</li>
-              </ul>
-              `
+            <h4>节点详情</h4>
+            <ul>
+              <li>节点名称: ${
+  e.item.getModel().label || e.item.getModel().id
+}</li>
+            </ul>
+            <ul>
+              <li>页面来源: ${e.item.getModel().source}</li>
+            </ul>
+            <ul>
+              <li>节点类型: ${e.item.getType()}</li>
+            </ul>
+            `
           return outDiv
         }
       })
@@ -301,6 +258,7 @@ export default {
       }
       G6.registerNode('card-node', {
         options: {
+          anchorPoints: [[0.5, 0], [0.5, 1]],
           style: {
             fill: '#d3adf7'
           },
@@ -322,6 +280,7 @@ export default {
           }
         },
         draw: function drawShape(cfg, group) {
+          // const { bgColor, icon } = cfg
           const r = 2
           // const color = '#00aaff'
           const w = getTextSize(cfg.name, 120, 16) + 20
@@ -333,28 +292,13 @@ export default {
               y: -h / 2,
               width: w, // 200,
               height: h, // 60
-              stroke: _that.fittingColor(cfg.nodeType),
+              stroke: _that.fittingColor(cfg.level),
               radius: r,
-              fill: _that.fittingColor(cfg.nodeType),
+              fill: _that.fittingColor(cfg.level),
               fontSize: 12
             },
             // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
             name: 'main-box',
-            draggable: true
-          })
-
-          group.addShape('rect', {
-            attrs: {
-              name: 'title-box',
-              x: -w / 2,
-              y: -h / 2,
-              width: w, // 200,
-              height: h, // 60
-              // fill: _that.fittingColor(cfg.nodeType),
-              radius: 0
-            },
-            // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
-            name: 'title-box',
             draggable: true
           })
 
@@ -382,40 +326,22 @@ export default {
                 cursor: 'pointer',
                 symbol: cfg.collapsed ? G6.Marker.expand : G6.Marker.collapse,
                 stroke: '#666',
-                lineWidth: 0.5,
+                lineWidth: 1,
                 fill: '#fff'
               },
               // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
               name: 'collapse-icon'
             })
-          // group.addShape('text', {
-          //   attrs: {
-          //     textBaseline: 'top',
-          //     x: -w / 2 + 8,
-          //     y: -h / 2 + 24,
-          //     lineHeight: 20,
-          //     text: 'description',
-          //     fill: 'rgba(0,0,0, 1)'
-          //   },
-          //   // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
-          //   name: `description`
-          // })
+
           return shape
         },
         setState(name, value, item) {
           if (name === 'collapsed') {
-            debugger
-            const marker = item.get('group').find(ele => ele.get('name') === 'collapse-icon')
+            const marker = item
+              .get('group')
+              .find((ele) => ele.get('name') === 'collapse-icon')
             const icon = value ? G6.Marker.expand : G6.Marker.collapse
             marker.attr('symbol', icon)
-            this.searchNodeList = []
-            graph.getNodes().forEach(node => {
-              const obj = {
-                id: node._cfg.model.id,
-                name: node._cfg.model.name
-              }
-              this.searchNodeList.push(obj)
-            })
           }
           const group = item.getContainer()
           const shape = group.get('children')[0]
@@ -425,8 +351,9 @@ export default {
               shape.attr('stroke', '#F08BB4')
               shape.attr('fill', '#F08BB4')
             } else {
-              shape.attr('stroke', _that.fittingColor(item.getModel().nodeType))
-              shape.attr('fill', _that.fittingColor(item.getModel().nodeType))
+              debugger
+              shape.attr('stroke', _that.fittingColor(item.getModel().level))
+              shape.attr('fill', _that.fittingColor(item.getModel().level))
             }
           }
         }
@@ -449,8 +376,7 @@ export default {
                 ['L', startPoint.x, (startPoint.y + endPoint.y) / 2],
                 ['L', endPoint.x, (startPoint.y + endPoint.y) / 2],
                 ['L', endPoint.x, endPoint.y]
-              ],
-              label: 'ddd'
+              ]
             }
           })
           return shape
@@ -461,6 +387,21 @@ export default {
           // 获取路径图形的中点坐标
           const midPoint = shape.getPoint(0.5)
           // 在中点增加一个矩形，注意矩形的原点在其左上角
+          // group.addShape('rect', {
+          //   attrs: {
+          //     width: 40,
+          //     height: 10,
+          //     fill: 'red',
+          //     fontSize: 12,
+          //     textAlign: "center",
+          //     // x 和 y 分别减去 width / 2 与 height / 2，使矩形中心在 midPoint 上
+          //     x: midPoint.x - 5,
+          //     y: midPoint.y - 5
+          //   },
+          //   name: 'mid-point-edge-rect', // 在 G6 3.3 及之后的版本中，必须指定 name，可以是任意字符串，但需要在同一个自定义元素类型中保持唯一性
+          // });
+
+          debugger
           group.addShape('text', {
             attrs: {
               text: '调用',
@@ -511,20 +452,22 @@ export default {
             }
           }
         }
-      })
+      }
+      )
       const container = document.getElementById('mountNode')
       const width = container.scrollWidth
       const height = container.scrollHeight || 700
       const minimap = new G6.Minimap({
         size: [150, 100]
       })
-      graph = new G6.TreeGraph({
+      graph = new G6.Graph({
         container: container,
         width,
         height,
         linkCenter: true,
         modes: {
-          default: ['drag-canvas', 'zoom-canvas', 'drag-node']
+          default: [
+            'drag-canvas', 'zoom-canvas', 'drag-node']
         },
         defaultNode: {
           type: 'card-node',
@@ -533,13 +476,16 @@ export default {
         defaultEdge: {
           // type: 'polyline',
           type: 'flow-line',
-          style: defaultEdgeStyle
+          style: defaultEdgeStyle,
+          sourceAnchor: 1,
+          targetAnchor: 0
         },
         plugins: [tooltip, minimap],
         layout: {
-          type: 'compactBox',
-          direction: 'TB',
-          dropCap: false,
+          type: 'dagre',
+          nodesep: 50, // 节点间距
+          ranksep: 40, // 层间距
+          controlPoints: true,
           getId: function getId(d) {
             return d.id
           },
@@ -604,12 +550,12 @@ export default {
             style: {
               // rotate,
               fontSize: 12,
-              fill: '#333'
+              fill: '#666'
             }
           }
         }
       })
-      G6.Util.traverseTree(this.dataList, item => {
+      G6.Util.traverseTree(this.dataList, (item) => {
         // 深度遍历
         // type在G6树结构有含义，表示节点形状,如果后端数据中有type需要重新定义
         // item.dataType = item.type
@@ -623,81 +569,30 @@ export default {
       graph.render()
       graph.fitView()
       // graph.render()
-      graph.on('node:click', e => {
-        this.searchNodeList = []
+      graph.on('node:click', (e) => {
+        debugger
         if (e.target.get('name') === 'collapse-icon') {
           e.item.getModel().collapsed = !e.item.getModel().collapsed
           graph.setItemState(e.item, 'collapsed', e.item.getModel().collapsed)
           graph.layout()
-          debugger
-          this.searchNodeList = []
-          graph.getNodes().forEach(node => {
-            const obj = {
-              id: node._cfg.model.id,
-              name: node._cfg.model.name
-            }
-            this.searchNodeList.push(obj)
-          })
         }
       })
-      graph.on('node:mouseenter', e => {
+      graph.on('node:mouseenter', (e) => {
         graph.setItemState(e.item, 'active', true)
         const node = e.item
         const edges = node.getEdges()
-        edges.forEach(edge => graph.setItemState(edge, 'running', true))
+        edges.forEach((edge) => graph.setItemState(edge, 'running', true))
       })
-      graph.on('node:mouseleave', e => {
+      graph.on('node:mouseleave', (e) => {
         graph.setItemState(e.item, 'active', false)
         const node = e.item
         const edges = node.getEdges()
-        edges.forEach(edge => graph.setItemState(edge, 'running', false))
+        edges.forEach((edge) => graph.setItemState(edge, 'running', false))
       })
-      // graph.on("combo:mouseenter", (e) => {
-      //   let comboItem = e.item;
-      //   const originStyle = comboItem._cfg.originStyle["circle-combo"].fill;
-      //   comboItem._cfg.styles.highlight.fill = originStyle;
-      //   graph.setItemState(comboItem, "highlight", true);
-      //   comboItem.getEdges().forEach((edge) => {
-      //     const originStyle = edge._cfg.originStyle["edge-shape"].stroke; // 获取边edge 原始颜色
-      //     edge._cfg.styles.highlight.stroke = originStyle;
-      //     let edgeSource = edge.getSource();
-      //     let edgeTarget = edge.getTarget();
-
-      //     if ( edgeSource._cfg.type === "combo" && edgeSource._cfg.model.id =="100-600" ) {
-      //       const originStyle = edgeSource._cfg.originStyle["circle-combo"].fill; // 获取分组combo 原始颜色
-      //       edgeSource._cfg.styles.highlight.fill = originStyle;
-      //     }
-      //     if ( edgeTarget._cfg.type === "combo" && edgeTarget._cfg.model.id =="100-600" ) {
-      //       const originStyle = edgeTarget._cfg.originStyle["circle-combo"].fill;
-      //       edgeTarget._cfg.styles.highlight.fill = originStyle;
-      //     }
-      //     graph.setItemState(edgeSource, "highlight", true);
-      //     graph.setItemState(edgeTarget, "highlight", true);
-      //     graph.setItemState(edge, "highlight", true);
-      //   });
-      // });
-
-      // graph.on('combo:mouseleave', () => {
-      //   graph.setAutoPaint(false)
-      //   graph.getNodes().forEach(node => {
-      //     graph.clearItemStates(node)
-      //   })
-      //   graph.getEdges().forEach(edge => {
-      //     graph.clearItemStates(edge)
-      //   })
-      //   graph.getCombos().forEach(combo => {
-      //     graph.clearItemStates(combo)
-      //   })
-      //   graph.paint()
-      //   graph.setAutoPaint(true)
-      // })
-
       if (typeof window !== 'undefined') {
         window.onresize = () => {
           if (!graph || graph.get('destroyed')) return
-          if (!container || !container.scrollWidth || !container.scrollHeight) {
-            return
-          }
+          if (!container || !container.scrollWidth || !container.scrollHeight) { return }
           graph.changeSize(container.scrollWidth, container.scrollHeight)
         }
       }

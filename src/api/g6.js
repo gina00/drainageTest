@@ -6,3 +6,9 @@ export function assetDataList() {
     method: 'get'
   })
 }
+export function treeDataList() {
+  return request({
+    url: '/vue-element-admin/drainage-test/treeDataList',
+    method: 'get'
+  })
+}

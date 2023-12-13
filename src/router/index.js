@@ -189,10 +189,30 @@ export const constantRoutes = [
         component: () => import('@/views/assetManage/operationMgr/index'),
         name: 'operationMgr',
         meta: {
-          title: '操作手册管理'
-        }
+          title: '资产血缘图'
+        },
+        children: [
+          {
+            path: 'treeGraph',
+            component: () => import('@/views/assetManage/testG6'),
+            name: 'treeGraph',
+            threeMenu: true,
+            meta: {
+              title: '树形结构的血缘图'
+            }
+          },
+          {
+            path: 'dragGraph',
+            component: () => import('@/views/assetManage/testG6-graph.vue'),
+            name: 'trafficReqCopy',
+            threeMenu: true,
+            meta: {
+              title: '平级数据血缘图'
+            }
+          }]
       }
     ]
+
   },
   {
     path: '/redirect',
