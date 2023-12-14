@@ -185,13 +185,30 @@ export const constantRoutes = [
     },
     children: [
       {
-        path: 'operationMgr',
+        path: 'assetList',
+        component: () => import('@/views/assetManage/operationMgr/assetList'),
+        name: 'assetList',
+        meta: {
+          title: '资产列表'
+        }
+      },
+      {
+        path: 'graph',
         component: () => import('@/views/assetManage/operationMgr/index'),
-        name: 'operationMgr',
+        name: 'graphMgr',
         meta: {
           title: '资产血缘图'
         },
         children: [
+          {
+            path: 'infor',
+            component: () => import('@/views/assetManage/testG6-graphInfor.vue'),
+            hidden: true,
+            name: 'graphInfor',
+            meta: {
+              title: '血缘图详情'
+            }
+          },
           {
             path: 'treeGraph',
             component: () => import('@/views/assetManage/testG6'),

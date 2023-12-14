@@ -77,7 +77,7 @@
 <script>
 import G6 from '@antv/g6'
 import insertCss from 'insert-css'
-import { graphData } from '@/api/g6.js'
+import { graphDetail } from '@/api/g6.js'
 insertCss(`
   .g6-component-tooltip {
     background-color: rgba(255, 255, 255, 0.8);
@@ -103,13 +103,14 @@ export default {
   },
   methods: {
     getData() {
-      graphData()
+      graphDetail(this.$route.query.menuId, this.$route.query.assetId)
         .then((response) => {
           this.dataList = response.data
           this.initregistG6()
           this.searchNodeList = JSON.parse(JSON.stringify(this.dataList))
         })
         .finally(() => {
+          this.searchNodeFun(this.$route.query.assetId)
           // this.clickToolbar('autoZoom',localGraph)
           // this.loading = false
         })
