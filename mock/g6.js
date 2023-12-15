@@ -146,7 +146,17 @@ const graphData = {
 const graphData1 = {
   // 节点的先后顺序与位置有关，应该从左到右，从上到下列举
   nodes: [
-    { id: '1', name: '页面资产', layType: 'lay-1', 'level': 1 },
+    { id: '1',
+      name: '页面资产',
+      layType: 'lay-1',
+      'level': 1,
+      hasParent: true,
+      hasChild: true,
+      parentCollapse: true, // 父节点是否折叠
+      childCollapse: true, // 子节点是否折叠
+      childIds: [],
+      parentIds: []
+    },
     { id: '5', name: '服务1', layType: 'lay-2', 'level': 2 },
     { id: '6', name: '服务2', layType: 'lay-2', 'level': 2 },
     { id: '10', name: '数据库1', layType: 'lay-3', 'level': 3 },

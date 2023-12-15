@@ -94,7 +94,8 @@ export default {
       searchNode: null,
       searchNodeList: [],
       lastSelectedNodeArr: [],
-      localGraph: {}
+      localGraph: {},
+      autoIncrementId: 100
     }
   },
   mounted() {
@@ -207,6 +208,64 @@ export default {
           break
       }
     },
+    getRandomIntInclusive(min, max) {
+      min = Math.ceil(min)
+      max = Math.floor(max)
+      return Math.floor(Math.random() * (max - min + 1)) + min // 含最大值，含最小值
+    },
+    /**
+   * 点击收起/展开的事件
+   * @param {*} evtName 节点名称
+   * @param {*} model 当前点击的数据模型
+   */
+    updateGraph(evtName, model) {
+      window.console.log('evtName', evtName)
+      window.console.log('model', model)
+      const newNodesData = [] // 新的节点数据
+      let newEdgesData = [] // 新的边数据
+      if (evtName === 'p-marker') {
+        if (model.parentCollapse) { // 目前是折叠状态，需要展开
+          newEdgesData = [].concat(this.dataList.edges)
+          const newAddNodes = []
+          const newIds = []
+          for (let i = 0; i < 2; i++) { // 固定添加两条数据，之后改成请求
+          // newNodesData[curNodeIndex].parentIds.push(String(autoIncrementId));
+
+            newIds.push(this.autoIncrementId + '')
+            const randomType = this.getRandomIntInclusive(1, 8)
+            console.log(randomType, 'randomType')
+            const colorItem = this.fittingColor(randomType)
+            newAddNodes.push({
+              id: this.autoIncrementId + '',
+              name: `测试新增父name${this.autoIncrementId}`,
+              taskId: `10000${this.autoIncrementId}`,
+              parentIds: [],
+              childIds: model.childIds.concat([model.id]),
+              level: 'parent',
+              hasChild: true,
+              hasParent: true,
+              parentCollapse: true,
+              childCollapse: false,
+              textColor: colorItem.textColor
+            })
+            newEdgesData.push({
+              target: model.id,
+              source: this.autoIncrementId + ''
+            })
+            this.autoIncrementId++
+          }
+          const curNodeIndex = this.dataList.nodes.findIndex(item => item.id === model.id) // 当前点击的节点在节点数据中的下标
+          this.dataList.nodes[curNodeIndex].parentCollapse = false
+          this.dataList.nodes[curNodeIndex].parentIds = this.dataList.nodes[curNodeIndex].parentIds.concat(newIds)
+          this.dataList.nodes.concat(newAddNodes).forEach(node => {
+            if (model.childIds.includes(node.id)) {
+              node.parentIds = node.parentIds.concat(newIds)
+            }
+            newNodesData.push(node)
+          })
+        }
+      }
+    },
     initregistG6() {
       const _that = this
       // 边样式
@@ -286,23 +345,26 @@ export default {
           // const color = '#00aaff'
           const w = getTextSize(cfg.name, 120, 16) + 20
           const h = 20
+          const rectConfig = {
+            x: -w / 2,
+            y: -h / 2,
+            width: w,
+            height: h,
+            lineWidth: 1,
+            fontSize: 12,
+            fill: _that.fittingColor(cfg.level),
+            radius: r,
+            opacity: 1,
+            stroke: _that.fittingColor(cfg.level)
+          }
           const shape = group.addShape('rect', {
             attrs: {
-              name: 'main-box',
-              x: -w / 2,
-              y: -h / 2,
-              width: w, // 200,
-              height: h, // 60
-              stroke: _that.fittingColor(cfg.level),
-              radius: r,
-              fill: _that.fittingColor(cfg.level),
-              fontSize: 12
+              ...rectConfig
             },
             // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
             name: 'main-box',
             draggable: true
           })
-
           // title text
           group.addShape('text', {
             attrs: {
@@ -318,32 +380,60 @@ export default {
             // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
             name: 'title'
           })
-          cfg.children &&
+          cfg.hasParent &&
             group.addShape('marker', {
               attrs: {
-                x: w / 8 - 5,
-                y: h / 2 + 2,
+                x: 0,
+                y: -h / 2 - 4,
                 r: 6,
                 cursor: 'pointer',
-                symbol: cfg.collapsed ? G6.Marker.expand : G6.Marker.collapse,
+                symbol: cfg.parentCollapse ? G6.Marker.expand : G6.Marker.collapse,
                 stroke: '#666',
                 lineWidth: 1,
                 fill: '#fff'
               },
               // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
-              name: 'collapse-icon'
+              name: 'p-marker'
+            })
+          cfg.hasChild &&
+            group.addShape('marker', {
+              attrs: {
+                x: 0,
+                y: h / 2 + 4,
+                r: 6,
+                cursor: 'pointer',
+                symbol: cfg.childCollapse ? G6.Marker.expand : G6.Marker.collapse,
+                stroke: '#666',
+                lineWidth: 1,
+                fill: '#fff'
+              },
+              // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
+              name: 'c-marker'
             })
 
           return shape
         },
         setState(name, value, item) {
-          if (name === 'collapsed') {
-            const marker = item
+          if (name === 'parentCollapse') {
+            const pmarker = item
               .get('group')
-              .find((ele) => ele.get('name') === 'collapse-icon')
+              .find((ele) => ele.get('name') === 'p-marker')
             const icon = value ? G6.Marker.expand : G6.Marker.collapse
-            marker.attr('symbol', icon)
+            pmarker.attr('symbol', icon)
+          } else if (name === 'childCollapse') {
+            const cmarker = item
+              .get('group')
+              .find((ele) => ele.get('name') === 'c-marker')
+            const icon = value ? G6.Marker.expand : G6.Marker.collapse
+            cmarker.attr('symbol', icon)
           }
+          // if (name === 'collapsed') {
+          //   const marker = item
+          //     .get('group')
+          //     .find((ele) => ele.get('name') === 'collapse-icon')
+          //   const icon = value ? G6.Marker.expand : G6.Marker.collapse
+          //   marker.attr('symbol', icon)
+          // }
           const group = item.getContainer()
           const shape = group.get('children')[0]
 
@@ -352,7 +442,6 @@ export default {
               shape.attr('stroke', '#F08BB4')
               shape.attr('fill', '#F08BB4')
             } else {
-              debugger
               shape.attr('stroke', _that.fittingColor(item.getModel().level))
               shape.attr('fill', _that.fittingColor(item.getModel().level))
             }
@@ -569,12 +658,18 @@ export default {
       graph.fitView()
       // graph.render()
       graph.on('node:click', (e) => {
-        debugger
-        if (e.target.get('name') === 'collapse-icon') {
-          e.item.getModel().collapsed = !e.item.getModel().collapsed
-          graph.setItemState(e.item, 'collapsed', e.item.getModel().collapsed)
+        const name = e.target.get('name')
+        const model = e.item.getModel()
+        if (name === 'p-marker') {
+          model.parentCollapse = !model.parentCollapse
+          graph.setItemState(e.item, 'parentCollapse', model.parentCollapse)
+          graph.layout()
+        } else if (name === 'c-marker') {
+          model.childCollapse = !model.childCollapse
+          graph.setItemState(e.item, 'childCollapse', model.childCollapse)
           graph.layout()
         }
+        this.updateGraph(name, model)
       })
       graph.on('node:mouseenter', (e) => {
         graph.setItemState(e.item, 'active', true)
