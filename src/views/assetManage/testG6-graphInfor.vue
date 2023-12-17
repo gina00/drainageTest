@@ -78,6 +78,7 @@
 import G6 from '@antv/g6'
 import insertCss from 'insert-css'
 import { graphDetail } from '@/api/g6.js'
+import { Queue } from 'queue-typed'
 insertCss(`
   .g6-component-tooltip {
     background-color: rgba(255, 255, 255, 0.8);
@@ -93,9 +94,11 @@ export default {
       dataList: {},
       searchNode: null,
       searchNodeList: [],
+      nodeCache: [],
       lastSelectedNodeArr: [],
       localGraph: {},
-      autoIncrementId: 100
+      autoIncrementId: 100,
+      manualCollapseMap: new Map()
     }
   },
   mounted() {
@@ -109,6 +112,7 @@ export default {
           this.dataList = response.data
           this.initregistG6()
           this.searchNodeList = JSON.parse(JSON.stringify(this.dataList))
+          this.nodeCache = JSON.parse(JSON.stringify(this.dataList))
         })
         .finally(() => {
           this.searchNodeFun(this.$route.query.assetId)
@@ -213,57 +217,112 @@ export default {
       max = Math.floor(max)
       return Math.floor(Math.random() * (max - min + 1)) + min // 含最大值，含最小值
     },
-    /**
-   * 点击收起/展开的事件
-   * @param {*} evtName 节点名称
-   * @param {*} model 当前点击的数据模型
-   */
-    updateGraph(evtName, model) {
-      window.console.log('evtName', evtName)
-      window.console.log('model', model)
-      const newNodesData = [] // 新的节点数据
-      let newEdgesData = [] // 新的边数据
-      if (evtName === 'p-marker') {
-        if (model.parentCollapse) { // 目前是折叠状态，需要展开
-          newEdgesData = [].concat(this.dataList.edges)
-          const newAddNodes = []
-          const newIds = []
-          for (let i = 0; i < 2; i++) { // 固定添加两条数据，之后改成请求
-          // newNodesData[curNodeIndex].parentIds.push(String(autoIncrementId));
 
-            newIds.push(this.autoIncrementId + '')
-            const randomType = this.getRandomIntInclusive(1, 8)
-            console.log(randomType, 'randomType')
-            const colorItem = this.fittingColor(randomType)
-            newAddNodes.push({
-              id: this.autoIncrementId + '',
-              name: `测试新增父name${this.autoIncrementId}`,
-              taskId: `10000${this.autoIncrementId}`,
-              parentIds: [],
-              childIds: model.childIds.concat([model.id]),
-              level: 'parent',
-              hasChild: true,
-              hasParent: true,
-              parentCollapse: true,
-              childCollapse: false,
-              textColor: colorItem.textColor
-            })
-            newEdgesData.push({
-              target: model.id,
-              source: this.autoIncrementId + ''
-            })
-            this.autoIncrementId++
-          }
-          const curNodeIndex = this.dataList.nodes.findIndex(item => item.id === model.id) // 当前点击的节点在节点数据中的下标
-          this.dataList.nodes[curNodeIndex].parentCollapse = false
-          this.dataList.nodes[curNodeIndex].parentIds = this.dataList.nodes[curNodeIndex].parentIds.concat(newIds)
-          this.dataList.nodes.concat(newAddNodes).forEach(node => {
-            if (model.childIds.includes(node.id)) {
-              node.parentIds = node.parentIds.concat(newIds)
-            }
-            newNodesData.push(node)
-          })
-        }
+    /**
+     * 获取所有祖先（source）或者后代（target）节点
+     * @param {*} node
+     * @param {*} type
+    */
+    getAllNeighborsNodes(node, type) {
+      const nodeIds = []
+      const nodeQueue = new Queue()
+      // 初始化队列元素
+      nodeQueue.enqueue(node.id)
+      // 遍历队列中的所有顶点
+      while (!nodeQueue.isEmpty()) {
+        const currentNodeId = nodeQueue.dequeue()
+        const neighbors = graph.getNeighbors(currentNodeId, type)
+        neighbors.forEach((nextNode) => {
+          const model = nextNode.getModel()
+          nodeQueue.enqueue(model.id)
+          nodeIds.push(model.id)
+        })
+      }
+      console.log(nodeIds)
+      return nodeIds
+    },
+    /**
+ * 找到该节点所有相关的节点和边数据
+ * @param {*} nodeId
+ * @param {*} graphData
+ * @param {*} type
+ */
+    getNeighborsNodeAndEdge(nodeId, graphData, type) {
+      const { nodes, edges } = graphData
+      let currentEdges = null
+      let nodeids = null
+      if (type === 'target') {
+        currentEdges = edges.filter(edge => edge.source === nodeId)
+
+        nodeids = currentEdges.map((edge) => edge.target)
+      }
+      if (type === 'source') {
+        currentEdges = edges.filter(edge => edge.target === nodeId)
+
+        nodeids = currentEdges.map((edge) => edge.source)
+      }
+
+      const currentNodes = nodes.filter(node => nodeids.includes(node.id))
+      currentNodes.forEach(node => {
+        const childExpand = this.manualCollapseMap.get(node.id + 'target')
+        const parentExpand = this.manualCollapseMap.get(node.id + 'source')
+        node.parentExpand = parentExpand
+        node.childExpand = childExpand
+      })
+      return { nodes: currentNodes, edges: currentEdges }
+    },
+    /**
+     * 获取所有祖先（source）或者后代（target）节点数据以及边数据
+     * @param {*} node
+     * @param {*} type
+    */
+    getAllNeighborsNodesAndEdge(node, graphData, type) {
+      const nodesList = []
+      const edgesList = []
+      const nodeQueue = new Queue()
+      // 初始化队列元素
+      nodeQueue.enqueue(node.id)
+      // 遍历队列中的所有顶点
+      while (!nodeQueue.isEmpty()) {
+        const currentNodeId = nodeQueue.dequeue()
+        const { nodes, edges } = this.getNeighborsNodeAndEdge(currentNodeId, graphData, type)
+        nodesList.push(...nodes)
+        edgesList.push(...edges)
+        nodes.forEach((nextNode) => {
+          const expand = this.manualCollapseMap.get(nextNode.id + type)
+          if (expand) { nodeQueue.enqueue(nextNode.id) }
+        })
+      }
+      return { nodes: nodesList, edges: edgesList }
+    },
+    /**
+     * 展开或折叠节点
+     * @param {*} node  当前节点
+     * @param {*} isExpand  是否展开
+     * @param {*} type   'source'：祖先节点 or 'target':子节点
+     */
+    expandOrCollapseNode(node, isExpand, type) {
+      // 开始隐藏
+      if (!isExpand) {
+        const { nodes, edges } = this.dataList
+        const nodeIds = this.getAllNeighborsNodes(node, type)
+        const newNodesData = nodes.filter(node => !nodeIds.includes(node.id))
+        const newEdgesData = edges.filter(edge => !nodeIds.includes(edge[type]))
+        console.log('隐藏newNodesData--🌈🌈', newNodesData)
+        console.log('隐藏newEdgesData--🌈🌈', newEdgesData)
+        this.dataList = { nodes: newNodesData, edges: newEdgesData }
+        graph.changeData(this.dataList)
+      } else {
+        const nowData = graph.save()
+        const { nodes, edges } = this.getAllNeighborsNodesAndEdge(node, this.nodeCache, type)
+        console.log('展开nodes--🌈🌈', nodes)
+        console.log('展开edges--🌈🌈', edges)
+        const newNodesData = nowData.nodes.concat(nodes)
+        const newEdgesData = nowData.edges.concat(edges)
+        console.log('展开newNodesData--🌈🌈', newNodesData)
+        console.log('展开newEdgesData--🌈🌈', newEdgesData)
+        this.dataList = { nodes: newNodesData, edges: newEdgesData }
+        graph.changeData(this.dataList)
       }
     },
     initregistG6() {
@@ -387,7 +446,7 @@ export default {
                 y: -h / 2 - 4,
                 r: 6,
                 cursor: 'pointer',
-                symbol: cfg.parentCollapse ? G6.Marker.expand : G6.Marker.collapse,
+                symbol: cfg.parentExpand ? G6.Marker.collapse : G6.Marker.expand,
                 stroke: '#666',
                 lineWidth: 1,
                 fill: '#fff'
@@ -402,7 +461,7 @@ export default {
                 y: h / 2 + 4,
                 r: 6,
                 cursor: 'pointer',
-                symbol: cfg.childCollapse ? G6.Marker.expand : G6.Marker.collapse,
+                symbol: cfg.childExpand ? G6.Marker.collapse : G6.Marker.expand,
                 stroke: '#666',
                 lineWidth: 1,
                 fill: '#fff'
@@ -414,13 +473,13 @@ export default {
           return shape
         },
         setState(name, value, item) {
-          if (name === 'parentCollapse') {
+          if (name === 'parentExpand') {
             const pmarker = item
               .get('group')
               .find((ele) => ele.get('name') === 'p-marker')
             const icon = value ? G6.Marker.expand : G6.Marker.collapse
             pmarker.attr('symbol', icon)
-          } else if (name === 'childCollapse') {
+          } else if (name === 'childExpand') {
             const cmarker = item
               .get('group')
               .find((ele) => ele.get('name') === 'c-marker')
@@ -661,15 +720,18 @@ export default {
         const name = e.target.get('name')
         const model = e.item.getModel()
         if (name === 'p-marker') {
-          model.parentCollapse = !model.parentCollapse
-          graph.setItemState(e.item, 'parentCollapse', model.parentCollapse)
+          model.parentExpand = !model.parentExpand
+          graph.setItemState(e.item, 'parentExpand', model.parentExpand)
+          this.manualCollapseMap.set(model.id + 'source', model.parentExpand)
+          this.expandOrCollapseNode(model, model.parentExpand, 'source')
           graph.layout()
         } else if (name === 'c-marker') {
-          model.childCollapse = !model.childCollapse
-          graph.setItemState(e.item, 'childCollapse', model.childCollapse)
+          model.childExpand = !model.childExpand
+          graph.setItemState(e.item, 'childExpand', model.childExpand)
+          this.manualCollapseMap.set(model.id + 'target', model.childExpand)
+          this.expandOrCollapseNode(model, model.childExpand, 'target')
           graph.layout()
         }
-        this.updateGraph(name, model)
       })
       graph.on('node:mouseenter', (e) => {
         graph.setItemState(e.item, 'active', true)

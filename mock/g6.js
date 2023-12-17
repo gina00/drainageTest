@@ -152,16 +152,22 @@ const graphData1 = {
       'level': 1,
       hasParent: true,
       hasChild: true,
-      parentCollapse: true, // 父节点是否折叠
-      childCollapse: true, // 子节点是否折叠
+      parentExpand: true, // 父节点是否折叠
+      childExpand: true, // 子节点是否折叠
       childIds: [],
       parentIds: []
     },
-    { id: '5', name: '服务1', layType: 'lay-2', 'level': 2 },
-    { id: '6', name: '服务2', layType: 'lay-2', 'level': 2 },
-    { id: '10', name: '数据库1', layType: 'lay-3', 'level': 3 },
-    { id: '14', name: '表2', layType: 'lay-4', 'level': 4 },
-    { id: '15', name: '表3', layType: 'lay-4', 'level': 4 }
+    { id: '5', name: '服务1', layType: 'lay-2', parentExpand: true, hasParent: true, hasChild: true, // 父节点是否折叠
+      childExpand: true, // 子节点是否折叠
+      'level': 2 },
+    { id: '6', name: '服务2', layType: 'lay-2', 'level': 2, hasParent: true, hasChild: true, parentExpand: true, // 父节点是否折叠
+      childExpand: true },
+    { id: '10', name: '数据库1', layType: 'lay-3', 'level': 3, hasParent: true, hasChild: true, parentExpand: true, // 父节点是否折叠
+      childExpand: true },
+    { id: '14', name: '表2', layType: 'lay-4', 'level': 4, hasParent: true, hasChild: true, parentExpand: true, // 父节点是否折叠
+      childExpand: true },
+    { id: '15', name: '表3', layType: 'lay-4', 'level': 4, hasParent: true, hasChild: true, parentExpand: true, // 父节点是否折叠
+      childExpand: true }
   ],
   edges: [
     { source: '1', target: '5', label: '调用' },
@@ -169,9 +175,7 @@ const graphData1 = {
     { source: '6', target: '5', label: '调用' },
     { source: '6', target: '10', label: '调用' },
     { source: '10', target: '15', label: '调用' },
-    { source: '10', target: '14', label: '只读' },
-    { source: '15', target: '18', label: '写入' },
-    { source: '14', target: '17', label: '调用' }
+    { source: '10', target: '14', label: '只读' }
   ]
 }
 const graphData2 = {
