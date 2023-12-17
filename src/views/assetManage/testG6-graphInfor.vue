@@ -113,6 +113,13 @@ export default {
           this.initregistG6()
           this.searchNodeList = JSON.parse(JSON.stringify(this.dataList))
           this.nodeCache = JSON.parse(JSON.stringify(this.dataList))
+          // 初始进入折叠当前节点的父级元素
+          const model = graph.findById(this.$route.query.assetId).getModel()
+          const assetIdItem = graph.findById(this.$route.query.assetId)
+          model.parentExpand = !model.parentExpand
+          graph.setItemState(assetIdItem, 'parentExpand', model.parentExpand)
+          this.manualCollapseMap.set(model.id + 'source', model.parentExpand)
+          this.expandOrCollapseNode(model, model.parentExpand, 'source')
         })
         .finally(() => {
           this.searchNodeFun(this.$route.query.assetId)
@@ -222,8 +229,9 @@ export default {
      * 获取所有祖先（source）或者后代（target）节点
      * @param {*} node
      * @param {*} type
+     * @param {*} allow 判断节点是否需要继续往下层或上层遍历
     */
-    getAllNeighborsNodes(node, type) {
+    getAllNeighborsNodes(node, type, allow) {
       const nodeIds = []
       const nodeQueue = new Queue()
       // 初始化队列元素
@@ -234,11 +242,19 @@ export default {
         const neighbors = graph.getNeighbors(currentNodeId, type)
         neighbors.forEach((nextNode) => {
           const model = nextNode.getModel()
-          nodeQueue.enqueue(model.id)
+
           nodeIds.push(model.id)
+          console.log('allow--🌈🌈', allow)
+          if (!allow) {
+            // 加入队列，继续往下层或上层遍历
+            nodeQueue.enqueue(model.id)
+          }
+          if (allow && allow(model)) {
+            // 加入队列，继续往下层或上层遍历
+            nodeQueue.enqueue(model.id)
+          }
         })
       }
-      console.log(nodeIds)
       return nodeIds
     },
     /**
@@ -302,28 +318,49 @@ export default {
      * @param {*} type   'source'：祖先节点 or 'target':子节点
      */
     expandOrCollapseNode(node, isExpand, type) {
-      // 开始隐藏
-      if (!isExpand) {
-        const { nodes, edges } = this.dataList
-        const nodeIds = this.getAllNeighborsNodes(node, type)
-        const newNodesData = nodes.filter(node => !nodeIds.includes(node.id))
-        const newEdgesData = edges.filter(edge => !nodeIds.includes(edge[type]))
-        console.log('隐藏newNodesData--🌈🌈', newNodesData)
-        console.log('隐藏newEdgesData--🌈🌈', newEdgesData)
-        this.dataList = { nodes: newNodesData, edges: newEdgesData }
-        graph.changeData(this.dataList)
+      console.log('节点 ', node, 'isExpand ', isExpand, 'type ', type)
+      // 开始展开
+      if (isExpand) {
+        // 使用添加数据方式实现
+        // const { nodes, edges } = this.getAllNeighborsNodesAndEdge(node, this.nodeCache, type)
+        // console.log('展开nodes--🌈🌈', nodes)
+        // console.log('展开edges--🌈🌈', edges)
+        // const newNodesData = nowData.nodes.concat(nodes)
+        // const newEdgesData = nowData.edges.concat(edges)
+        // console.log('展开newNodesData--🌈🌈', newNodesData)
+        // console.log('展开newEdgesData--🌈🌈', newEdgesData)
+        // this.dataList = { nodes: newNodesData, edges: newEdgesData }
+        // graph.changeData(this.dataList)
+        // 使用显示方式实现
+        const nodeIds = this.getAllNeighborsNodes(node, type, (nodeMode) => {
+          if (type == 'target') {
+            return nodeMode.childExpand
+          } else {
+            return nodeMode.parentExpand
+          }
+        })
+        nodeIds.forEach(id => {
+          graph.showItem(id)
+        })
       } else {
-        const nowData = graph.save()
-        const { nodes, edges } = this.getAllNeighborsNodesAndEdge(node, this.nodeCache, type)
-        console.log('展开nodes--🌈🌈', nodes)
-        console.log('展开edges--🌈🌈', edges)
-        const newNodesData = nowData.nodes.concat(nodes)
-        const newEdgesData = nowData.edges.concat(edges)
-        console.log('展开newNodesData--🌈🌈', newNodesData)
-        console.log('展开newEdgesData--🌈🌈', newEdgesData)
-        this.dataList = { nodes: newNodesData, edges: newEdgesData }
-        graph.changeData(this.dataList)
+        const nodeIds = this.getAllNeighborsNodes(node, type)
+        // 使用删除数据方式实现
+        // const { nodes, edges } = this.dataList
+        // const newNodesData = nodes.filter(node => !nodeIds.includes(node.id))
+        // const newEdgesData = edges.filter(edge => !nodeIds.includes(edge[type]))
+        // console.log('隐藏newNodesData--🌈🌈', newNodesData)
+        // console.log('隐藏newEdgesData--🌈🌈', newEdgesData)
+        // this.dataList = { nodes: newNodesData, edges: newEdgesData }
+        // graph.changeData(this.dataList)
+        // 使用隐藏方式实现
+        nodeIds.forEach(id => {
+          graph.hideItem(id)
+        })
       }
+      graph.focusItem(node.id, true, {
+        easing: 'easeCubic',
+        duration: 500
+      })
     },
     initregistG6() {
       const _that = this
@@ -477,13 +514,13 @@ export default {
             const pmarker = item
               .get('group')
               .find((ele) => ele.get('name') === 'p-marker')
-            const icon = value ? G6.Marker.expand : G6.Marker.collapse
+            const icon = value ? G6.Marker.collapse : G6.Marker.expand
             pmarker.attr('symbol', icon)
           } else if (name === 'childExpand') {
             const cmarker = item
               .get('group')
               .find((ele) => ele.get('name') === 'c-marker')
-            const icon = value ? G6.Marker.expand : G6.Marker.collapse
+            const icon = value ? G6.Marker.collapse : G6.Marker.expand
             cmarker.attr('symbol', icon)
           }
           // if (name === 'collapsed') {
@@ -719,6 +756,7 @@ export default {
       graph.on('node:click', (e) => {
         const name = e.target.get('name')
         const model = e.item.getModel()
+        debugger
         if (name === 'p-marker') {
           model.parentExpand = !model.parentExpand
           graph.setItemState(e.item, 'parentExpand', model.parentExpand)
