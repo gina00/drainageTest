@@ -150,27 +150,26 @@ const graphData1 = {
       name: '页面资产',
       layType: 'lay-1',
       'level': 1,
-      hasParent: true,
+      hasParent: false,
       hasChild: true,
-      parentExpand: true, // 父节点是否折叠
-      childExpand: true, // 子节点是否折叠
+      parentExpand: true, // 父节点是否展开
+      childExpand: true, // 子节点是否展开
       childIds: [],
       parentIds: []
     },
-    { id: '5', name: '服务1', layType: 'lay-2', parentExpand: true, hasParent: true, hasChild: true, // 父节点是否折叠
-      childExpand: true, // 子节点是否折叠
+    { id: '5', name: '服务1', layType: 'lay-2', parentExpand: true, hasParent: true, hasChild: false, // 父节点是否折叠
+      childExpand: true, // 子节点是否展开
       'level': 2 },
     { id: '6', name: '服务2', layType: 'lay-2', 'level': 2, hasParent: true, hasChild: true, parentExpand: true, // 父节点是否折叠
       childExpand: true },
     { id: '10', name: '数据库1', layType: 'lay-3', 'level': 3, hasParent: true, hasChild: true, parentExpand: true, // 父节点是否折叠
       childExpand: true },
-    { id: '14', name: '表2', layType: 'lay-4', 'level': 4, hasParent: true, hasChild: true, parentExpand: true, // 父节点是否折叠
+    { id: '14', name: '表2', layType: 'lay-4', 'level': 4, hasParent: true, hasChild: false, parentExpand: true, // 父节点是否折叠
       childExpand: true },
-    { id: '15', name: '表3', layType: 'lay-4', 'level': 4, hasParent: true, hasChild: true, parentExpand: true, // 父节点是否折叠
+    { id: '15', name: '表3', layType: 'lay-4', 'level': 4, hasParent: true, hasChild: false, parentExpand: true, // 父节点是否折叠
       childExpand: true }
   ],
   edges: [
-    { source: '1', target: '5', label: '调用' },
     { source: '1', target: '6', label: '调用' },
     { source: '6', target: '5', label: '调用' },
     { source: '6', target: '10', label: '调用' },
@@ -181,14 +180,43 @@ const graphData1 = {
 const graphData2 = {
   // 节点的先后顺序与位置有关，应该从左到右，从上到下列举
   nodes: [
-    { id: '6', name: 'PO工作台页面', layType: 'lay-1', 'level': 1 },
+    { id: '6', name: 'PO工作台页面', layType: 'lay-1', 'level': 1, hasParent: false,
+      hasChild: true,
+      parentExpand: true, // 父节点是否展开
+      childExpand: true // 子节点是否展开
+    },
     // { id: '5', name: '服务1', layType: 'lay-2', 'level': 2 },
-    { id: '7', name: '服务2', layType: 'lay-2', 'level': 2 },
-    { id: '10', name: '数据库1', layType: 'lay-3', 'level': 3 },
-    { id: '14', name: '表2', layType: 'lay-4', 'level': 4 },
-    { id: '15', name: '表3', layType: 'lay-4', 'level': 4 },
-    { id: '17', name: '字段1', layType: 'lay-5', 'level': 5 },
-    { id: '18', name: '字段2', layType: 'lay-5', 'level': 5 }
+    { id: '7', name: '服务2', layType: 'lay-2', 'level': 2,
+      hasParent: true,
+      hasChild: true,
+      parentExpand: true, // 父节点是否展开
+      childExpand: true // 子节点是否展开
+    },
+    { id: '10', name: '数据库1', layType: 'lay-3', 'level': 3, hasParent: true,
+      hasChild: true,
+      parentExpand: true, // 父节点是否展开
+      childExpand: true // 子节点是否展开
+    },
+    { id: '14', name: '表2', layType: 'lay-4', 'level': 4, hasParent: true,
+      hasChild: true,
+      parentExpand: true, // 父节点是否展开
+      childExpand: true // 子节点是否展开
+    },
+    { id: '15', name: '表3', layType: 'lay-4', 'level': 4, hasParent: true,
+      hasChild: true,
+      parentExpand: true, // 父节点是否展开
+      childExpand: true // 子节点是否展开
+    },
+    { id: '17', name: '字段1', layType: 'lay-5', 'level': 5, hasParent: true,
+      hasChild: false,
+      parentExpand: true, // 父节点是否展开
+      childExpand: true // 子节点是否展开
+    },
+    { id: '18', name: '字段2', layType: 'lay-5', 'level': 5, hasParent: true,
+      hasChild: false,
+      parentExpand: true, // 父节点是否展开
+      childExpand: true // 子节点是否展开
+    }
   ],
   edges: [
     { source: '6', target: '7', label: '调用' },
