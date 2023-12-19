@@ -366,9 +366,10 @@ export default {
       const _that = this
       // 边样式
       const defaultEdgeStyle = {
-        stroke: '#666',
+        radius: 8,
+        stroke: 'rgb(19, 33, 92)',
         endArrow: {
-          path: G6.Arrow.vee(5, 5, 10),
+          path: G6.Arrow.vee(5, 5, 12),
           // path: "M 0,0 L 12, 6 L 9,0 L 12, -6 Z",
           fill: '#666',
           opacity: 0.8,
@@ -393,9 +394,7 @@ export default {
           outDiv.innerHTML = `
             <h4>节点详情</h4>
             <ul>
-              <li>节点名称: ${
-  e.item.getModel().label || e.item.getModel().id
-}</li>
+              <li>节点名称: ${e.item.getModel().label || e.item.getModel().id}</li>
             </ul>
             <ul>
               <li>页面来源: ${e.item.getModel().source}</li>
@@ -436,77 +435,182 @@ export default {
           }
         },
         draw: function drawShape(cfg, group) {
+          const radius = 2
+          const borderGrey = '#CED4D9'
           // const { bgColor, icon } = cfg
-          const r = 2
-          // const color = '#00aaff'
-          const w = getTextSize(cfg.name, 120, 16) + 20
-          const h = 20
+          const width = getTextSize(cfg.name, 120, 12) + 20
+          const height = 24
           const rectConfig = {
-            x: -w / 2,
-            y: -h / 2,
-            width: w,
-            height: h,
+            width: width,
+            height: height,
             lineWidth: 1,
             fontSize: 12,
-            fill: _that.fittingColor(cfg.level),
-            radius: r,
+            radius: radius,
             opacity: 1,
-            stroke: _that.fittingColor(cfg.level)
+            fill: '#fff',
+            // fill: _that.fittingColor(cfg.level),
+            stroke: borderGrey
+          }
+          const nodeOrigin = {
+            x: -rectConfig.width / 2,
+            y: -rectConfig.height / 2
+          }
+          const textConfig = {
+            textAlign: 'left',
+            textBaseline: 'middle'
           }
           const shape = group.addShape('rect', {
             attrs: {
+              x: nodeOrigin.x,
+              y: nodeOrigin.y,
               ...rectConfig
             },
             // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
             name: 'main-box',
             draggable: true
           })
-          // title text
+          // 节点类型矩形
+          const nodeType = group.addShape('rect', {
+            attrs: {
+              width: 3,
+              height: height,
+              radius: [radius, 0, 0, radius],
+              x: nodeOrigin.x - 1,
+              y: nodeOrigin.y,
+              fill: _that.fittingColor(cfg.level),
+              fontSize: 12,
+              opacity: 0.85
+            },
+            // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
+            name: 'node-type'
+          })
+          // 图标节点
+          const icon = group.addShape('rect', {
+            attrs: {
+              ...textConfig,
+              width: 8,
+              height: 8,
+              radius: radius,
+              x: nodeType.getBBox().maxX + 4,
+              y: nodeType.getBBox().minY + 8,
+              lineHeight: 20,
+              text: '\ue671',
+              fontFamily: 'iconfont',
+              show: true,
+              fill: '#000',
+              fontSize: 12,
+              opacity: 0.15
+            },
+            // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
+            name: 'node-icon'
+          })
+          // 文本节点
           group.addShape('text', {
             attrs: {
-              textBaseline: 'middle',
-              // x: -w / 2 + 4,
-              // y: -h / 2 + 6,
-              lineHeight: 20,
+              ...textConfig,
+              x: icon.getBBox().maxX + 4,
+              y: 0,
               text: _that.fittingString(cfg.name, 100, 12),
-              fill: '#fff',
-              fontSize: 12,
-              textAlign: 'center'
+              fill: '#000',
+              fontSize: 10,
+              opacity: 0.75
             },
             // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
             name: 'title'
           })
-          cfg.hasParent &&
-            group.addShape('marker', {
+          // 展开与折叠的图标
+          if (cfg.hasParent) {
+            const expandBg = group.addShape('circle', {
               attrs: {
                 x: 0,
-                y: -h / 2 - 4,
-                r: 6,
+                y: -rectConfig.height / 2,
+                width: 8,
+                height: 8,
+                r: 4,
+                stroke: 'rgba(0, 0, 0, 0.25)',
                 cursor: 'pointer',
-                symbol: cfg.parentExpand ? G6.Marker.collapse : G6.Marker.expand,
-                stroke: '#666',
-                lineWidth: 1,
                 fill: '#fff'
+              },
+              // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
+              name: 'p-marker-rect'
+              // modelId: cfg.id
+            })
+            group.addShape('text', {
+              attrs: {
+                x: 0,
+                y: expandBg.getBBox().minY + 5,
+                textAlign: 'center',
+                textBaseline: 'middle',
+                text: cfg.parentExpand ? '+' : '-',
+                fontSize: 8,
+                cursor: 'pointer',
+                fill: 'rgba(0, 0, 0, 0.25)'
               },
               // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
               name: 'p-marker'
+              // modelId: cfg.id
             })
-          cfg.hasChild &&
-            group.addShape('marker', {
+          }
+          if (cfg.hasChild) {
+            const expandBg = group.addShape('circle', {
               attrs: {
                 x: 0,
-                y: h / 2 + 4,
-                r: 6,
+                y: rectConfig.height / 2,
+                width: 8,
+                height: 8,
+                r: 4,
+                stroke: 'rgba(0, 0, 0, 0.25)',
                 cursor: 'pointer',
-                symbol: cfg.childExpand ? G6.Marker.collapse : G6.Marker.expand,
-                stroke: '#666',
-                lineWidth: 1,
                 fill: '#fff'
               },
-              // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
-              name: 'c-marker'
+              name: 'c-marker-rect'
+              // modelId: cfg.id
             })
-
+            group.addShape('text', {
+              attrs: {
+                x: 0,
+                y: expandBg.getBBox().minY + 5,
+                textAlign: 'center',
+                textBaseline: 'middle',
+                text: cfg.childExpand ? '+' : '-',
+                fontSize: 8,
+                cursor: 'pointer',
+                fill: 'rgba(0, 0, 0, 0.25)'
+              },
+              name: 'c-marker'
+              // modelId: cfg.id
+            })
+          }
+          // cfg.hasParent &&
+          //   group.addShape('marker', {
+          //     attrs: {
+          //       x: 0,
+          //       y: -height / 2 - 4,
+          //       r: 6,
+          //       cursor: 'pointer',
+          //       symbol: cfg.parentExpand ? G6.Marker.collapse : G6.Marker.expand,
+          //       stroke: '#666',
+          //       lineWidth: 1,
+          //       fill: '#fff'
+          //     },
+          //     // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
+          //     name: 'p-marker'
+          //   })
+          // cfg.hasChild &&
+          //   group.addShape('marker', {
+          //     attrs: {
+          //       x: 0,
+          //       y: height / 2 + 4,
+          //       r: 6,
+          //       cursor: 'pointer',
+          //       symbol: cfg.childExpand ? G6.Marker.collapse : G6.Marker.expand,
+          //       stroke: '#666',
+          //       lineWidth: 1,
+          //       fill: '#fff'
+          //     },
+          //     // must be assigned in G6 3.3 and later versions. it can be any string you want, but should be unique in a custom item type
+          //     name: 'c-marker'
+          //   })
           return shape
         },
         setState(name, value, item) {
@@ -514,14 +618,32 @@ export default {
             const pmarker = item
               .get('group')
               .find((ele) => ele.get('name') === 'p-marker')
-            const icon = value ? G6.Marker.collapse : G6.Marker.expand
-            pmarker.attr('symbol', icon)
+            if (pmarker) {
+              if (!value) {
+                pmarker.attr({
+                  text: '+'
+                })
+              } else {
+                pmarker.attr({
+                  text: '-'
+                })
+              }
+            }
           } else if (name === 'childExpand') {
             const cmarker = item
               .get('group')
               .find((ele) => ele.get('name') === 'c-marker')
-            const icon = value ? G6.Marker.collapse : G6.Marker.expand
-            cmarker.attr('symbol', icon)
+            if (cmarker) {
+              if (!value) {
+                cmarker.attr({
+                  text: '+'
+                })
+              } else {
+                cmarker.attr({
+                  text: '-'
+                })
+              }
+            }
           }
           // if (name === 'collapsed') {
           //   const marker = item
@@ -532,16 +654,30 @@ export default {
           // }
           const group = item.getContainer()
           const shape = group.get('children')[0]
-
+          const text = group.get('children')[3]
           if (name === 'active') {
             if (value) {
               shape.attr('stroke', '#F08BB4')
               shape.attr('fill', '#F08BB4')
+              // shape.attr('shadowBlur', '20')
+              // shape.attr('shadowColor', '#000')
+              text.attr('fill', '#fff')
+              text.attr('opacity', '1')
             } else {
-              shape.attr('stroke', _that.fittingColor(item.getModel().level))
-              shape.attr('fill', _that.fittingColor(item.getModel().level))
+              shape.attr('stroke', '#CED4D9')
+              shape.attr('fill', '#fff')
+              // shape.attr('shadowBlur', '0')
+              // shape.attr('shadowColor', '#ddd')
+              text.attr('fill', '#000')
+              text.attr('opacity', '0.75')
             }
           }
+        },
+        getAnchorPoints() {
+          return [
+            [-1, 0.5],
+            [0, 0.5]
+          ]
         }
       })
       // 自定义边
@@ -636,8 +772,7 @@ export default {
             }
           }
         }
-      }
-      )
+      })
       const container = document.getElementById('mountNode')
       const width = container.scrollWidth
       const height = container.scrollHeight || 700
@@ -655,7 +790,11 @@ export default {
         },
         defaultNode: {
           type: 'card-node',
-          size: [100, 20]
+          labelCfg: {
+            style: {
+              fontSize: 12
+            }
+          }
         },
         defaultEdge: {
           // type: 'polyline',
@@ -668,7 +807,7 @@ export default {
         layout: {
           type: 'dagre',
           nodesep: 50, // 节点间距
-          ranksep: 40, // 层间距
+          ranksep: 20, // 层间距
           controlPoints: true,
           getId: function getId(d) {
             return d.id
@@ -680,13 +819,14 @@ export default {
             return 40
           },
           getVGap: function getVGap() {
-            return 40
+            return 20
           },
           getHGap: function getHGap() {
-            return 40
+            return 20
           }
         },
         fitView: true,
+        animate: true,
         fitViewPadding: 20
       })
       graph.node(function(node) {
@@ -739,16 +879,16 @@ export default {
           }
         }
       })
-      G6.Util.traverseTree(this.dataList, (item) => {
-        // 深度遍历
-        // type在G6树结构有含义，表示节点形状,如果后端数据中有type需要重新定义
-        // item.dataType = item.type
-        // item.type = "rNode";
-        // 获取itemStatusName
-        if (item.level == 3) {
-          item.collapsed = true
-        }
-      })
+      // G6.Util.traverseTree(this.dataList, (item) => {
+      //   // 深度遍历
+      //   // type在G6树结构有含义，表示节点形状,如果后端数据中有type需要重新定义
+      //   // item.dataType = item.type
+      //   // item.type = "rNode";
+      //   // 获取itemStatusName
+      //   if (item.level == 3) {
+      //     item.collapsed = true
+      //   }
+      // })
       graph.data(this.dataList)
       graph.render()
       graph.fitView()
