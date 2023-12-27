@@ -541,7 +541,7 @@ export default {
                 y: expandBg.getBBox().minY + 5,
                 textAlign: 'center',
                 textBaseline: 'middle',
-                text: cfg.parentExpand ? '+' : '-',
+                text: cfg.parentExpand ? '-' : '+',
                 fontSize: 8,
                 cursor: 'pointer',
                 fill: 'rgba(0, 0, 0, 0.25)'
@@ -572,7 +572,7 @@ export default {
                 y: expandBg.getBBox().minY + 5,
                 textAlign: 'center',
                 textBaseline: 'middle',
-                text: cfg.childExpand ? '+' : '-',
+                text: cfg.childExpand ? '-' : '+',
                 fontSize: 8,
                 cursor: 'pointer',
                 fill: 'rgba(0, 0, 0, 0.25)'
@@ -873,7 +873,7 @@ export default {
             // size:size,
             style: {
               // rotate,
-              fontSize: 12,
+              fontSize: 8,
               fill: '#666'
             }
           }
